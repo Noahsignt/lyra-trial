@@ -11,7 +11,7 @@ export default function Post() {
             <div className="flex items-center justify-between gap-x-2">
                 <h1 className="text-2xl font-bold">{user?.name}</h1>
                 <div className="flex items-center gap-x-2">
-                    <img src={user?.image || ""} alt={user?.name || ""} className="w-10 h-10 rounded-full" />
+                    <img src={user?.image ?? ""} alt={user?.name ?? ""} className="w-10 h-10 rounded-full" />
                     <p>{user?.email}</p>
                 </div>
             </div>
