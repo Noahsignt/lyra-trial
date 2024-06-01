@@ -8,6 +8,9 @@ import { Header } from "~/components/Header";
 import { AuthBtn } from "~/components/AuthBtn";
 
 export default function Home() {
+  const { data: sessionData } = useSession();
+  const { data: posts } = api.post.getAll.useQuery();
+
   return (
     <>
       <Head>
@@ -17,7 +20,12 @@ export default function Home() {
       </Head>
       <Header />
       <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <IntroBloc />
+        {sessionData ? posts?.map((post) => (
+          <div key={post.id}>
+            <h1>{post.title}</h1>
+            <p>{post.content}</p>
+          </div>
+        )) : <IntroBloc />}
       </main>
     </>
   );
