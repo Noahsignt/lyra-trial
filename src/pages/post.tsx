@@ -21,7 +21,7 @@ export default function Post() {
     return (
         <>
             <Header />
-            <main className="px-24 py-4 flex flex-col gap-4">
+            <main className="px-24 py-4 flex flex-col gap-4 h-full">
                 {user && 
                 <>
                     <Byline />
