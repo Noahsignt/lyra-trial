@@ -6,7 +6,7 @@ export const Header = () => {
     const { data: sessionData } = useSession();
 
     return (
-        <header className="flex justify-between items-center bg-fuchsia-500">
+        <header className="flex justify-between items-center border-b-2 border-black">
             <h1 className="text-2xl font-bold px-4">
                 Lyredium
             </h1>

@@ -19,10 +19,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+      <main className=" flex min-h-screen flex-col items-center justify-center">
         {sessionData ? posts?.map((post) => (
-          <div key={post.id}>
-            <h1>{post.title}</h1>
+          <div key={post.id} className="bg-white p-4 rounded-md">
+            <h1 className="text-2xl font-bold">{post.title}</h1>
             <p>{post.content}</p>
           </div>
         )) : <IntroBloc />}
