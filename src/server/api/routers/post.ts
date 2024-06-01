@@ -14,7 +14,7 @@ export const postRouter = createTRPCRouter({
     });
 
     // return empty array or prisma will return all users
-    if(!posts || !posts.length){
+    if(!(posts?.length)){
       return []
     }
 
