@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 
 import { Header } from "~/components/Header";
 import { AuthBtn } from "~/components/AuthBtn";
+import { LoadingSpinner } from "~/components/LoadingSpinner";
 
 export default function Home() {
   const { data: sessionData } = useSession();
@@ -19,8 +20,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className=" flex min-h-screen flex-col items-center justify-center">
-        {sessionData ? posts?.map((post) => (
+      <main className=" flex min-h-screen flex-col items-center py-8">
+        {sessionData ? posts ? posts?.map((post) => (
           <div key={post.id} className="bg-white p-4 rounded-md flex flex-col gap-4">
             {post.img && post.name && <div className="flex items-center gap-2">
               <img src={post.img} alt={post.name} className="w-8 h-8 rounded-full" />
@@ -31,7 +32,9 @@ export default function Home() {
               <p>{post.content}</p>
             </div>
           </div>
-        )) : <IntroBloc />}
+        )) : 
+        <LoadingSpinner />
+ : <IntroBloc />}
       </main>
     </>
   );
