@@ -13,6 +13,9 @@ export const Header = () => {
                 Lyredium
             </Link>
             <div className="flex items-center">
+                <Link href="/post" className="px-6 py-2 bg-black text-white rounded-md">
+                    Post
+                </Link>
                 <AuthBtn text={sessionData ? "Sign out" : "Sign in"} 
                 onClick={sessionData ? () => void signOut() : () => void signIn()}
                 isTransparent={true}/>
