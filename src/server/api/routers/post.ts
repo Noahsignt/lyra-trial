@@ -38,23 +38,18 @@ export const postRouter = createTRPCRouter({
     return postsWithUser
   }),
 
-  getUsersPosts: protectedProcedure.query(async ({ ctx }) => {
-    const posts = await ctx.db.post.findMany({
-      where: { createdBy: { id: ctx.session.user.id } },
-      orderBy: { createdAt: "desc" }
-    });
-
-    return posts;
-  }),
-
-  // create: protectedProcedure
-  //   .input(z.object({ name: z.string().min(1) }))
-  //   .mutation(async ({ ctx, input }) => {
-  //     return ctx.db.post.create({
-  //       data: {
-  //         title: input.name,
-  //         createdBy: { connect: { id: ctx.session.user.id } },
-  //       },
-  //     });
-  //   }),
+  create: protectedProcedure
+    .input(z.object({ 
+      title: z.string().min(1),
+      content: z.string().min(1),
+     }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.create({
+        data: {
+          title: input.title,
+          content: input.content,
+          createdBy: { connect: { id: ctx.session.user.id } },
+        },
+      });
+    }),
 });

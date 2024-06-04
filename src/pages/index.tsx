@@ -9,8 +9,11 @@ import { AuthBtn } from "~/components/AuthBtn";
 import { LoadingSpinner } from "~/components/LoadingSpinner";
 
 export default function Home() {
-  const { data: sessionData } = useSession();
-  const { data: posts } = api.post.getAll.useQuery();
+  const { data: sessionData, status: userStatus } = useSession();
+  const { data: posts, status: postsStatus } = api.post.getAll.useQuery();
+
+  const isLoaded = userStatus !== "loading" && postsStatus !== "pending";
+  const isAuth = sessionData;
 
   return (
     <>
@@ -20,9 +23,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className=" flex min-h-screen flex-col justify-center items-center py-8">
-        {sessionData ? posts ? posts?.map((post) => (
-          <div key={post.id} className="bg-white p-4 rounded-md flex flex-col gap-4 px-4">
+      <main className=" flex min-h-screen flex-col justify-center items-center py-8 gap-4">
+        {isLoaded ? isAuth ? posts?.map((post) => (
+          <div key={post.id} className="bg-white p-4 rounded-md flex flex-col gap-4 px-4 w-3/4">
             {post.img && post.name && <div className="flex items-center gap-2">
               <img src={post.img} alt={post.name} className="w-8 h-8 rounded-full" />
               <p className="text-sm">{post.name}</p>
@@ -33,8 +36,8 @@ export default function Home() {
             </div>
           </div>
         )) : 
-        <LoadingSpinner />
- : <IntroBloc />}
+        <IntroBloc />
+ : <LoadingSpinner />}
       </main>
     </>
   );
