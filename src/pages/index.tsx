@@ -25,16 +25,18 @@ export default function Home() {
       <Header />
       <main className=" flex min-h-screen flex-col justify-center items-center py-8 gap-4">
         {isLoaded ? isAuth ? posts?.map((post) => (
-          <div key={post.id} className="bg-white p-4 rounded-md flex flex-col gap-4 px-4 w-3/4">
-            {post.img && post.name && <div className="flex items-center gap-2">
-              <img src={post.img} alt={post.name} className="w-8 h-8 rounded-full" />
-              <p className="text-sm">{post.name}</p>
-            </div>}
-            <div>
-              <h1 className="text-2xl font-bold">{post.title}</h1>
-              <p>{post.content}</p>
+          <Link href={`/post/${post.id}`} key={post.id} className="w-3/4">
+            <div className="bg-white p-4 rounded-md flex flex-col gap-4 px-4">
+              {post.img && post.name && <div className="flex items-center gap-2">
+                <img src={post.img} alt={post.name} className="w-8 h-8 rounded-full" />
+                <p className="text-sm">{post.name}</p>
+              </div>}
+              <div>
+                <h1 className="text-2xl font-bold">{post.title}</h1>
+                <p>{post.content}</p>
+              </div>
             </div>
-          </div>
+          </Link>
         )) : 
         <IntroBloc />
  : <LoadingSpinner />}

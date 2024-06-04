@@ -12,10 +12,13 @@ export const Header = () => {
             <Link className="text-2xl font-bold px-4" href="/">
                 Lyredium
             </Link>
+            {sessionData && 
+            <Btn text={"Post"}
+            onClick={() => window.location.href="/post"}
+            lightScheme={false}/>}
             <div className="flex items-center">
-                {sessionData && 
-                <Btn text={"Post"}
-                onClick={() => window.location.href="/post"}
+                {sessionData && <Btn text={"Profile"}
+                onClick={() => window.location.href=`/user/${sessionData.user.email}`}
                 lightScheme={false}/>}
                 <Btn text={sessionData ? "Sign out" : "Sign in"} 
                 onClick={sessionData ? () => void signOut() : () => void signIn()}
