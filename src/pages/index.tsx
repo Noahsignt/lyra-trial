@@ -26,7 +26,7 @@ export default function Home() {
       <Header />
       <main className=" flex min-h-screen flex-col justify-center items-center py-8 gap-4">
         {isLoaded ? isAuth ? posts?.map((post) => (
-          <PostView post={post} />
+          <PostView post={post} key={post.id} />
         )) : 
         <IntroBloc />
  : <LoadingSpinner />}
