@@ -63,14 +63,16 @@ const Home : NextPage<PageProps> = (props) => {
       </Head>
       <Header />
       <main className=" flex min-h-screen flex-col justify-center items-center py-8 gap-4">
-        <div>
-          <Image src={userData.image || ''} alt={userData.name || ''} width={100} height={100} />
-          <h1>
-            {userData.name}
-          </h1>
-          <h2>
-            {userData.email}
-          </h2>
+        <div className="bg-white p-4 rounded-md h-1/2 w-3/4 flex gap-8">
+          <Image src={userData.image || ''} alt={userData.name || ''} width={64} height={64} className="rounded-full"/>
+          <div className="text-right flex flex-col">
+            <h1 className="text-4xl font-bold">
+              {userData.name}
+            </h1>
+            <h2 className="italic">
+              {userData.email}
+            </h2>
+          </div>
         </div>
       </main>
     </>
