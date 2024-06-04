@@ -1,12 +1,10 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
-import Link from "next/link";
 import Image from 'next/image';
 
 import { api } from "~/utils/api";
 
 import { Header } from "~/components/Header";
-import { LoadingSpinner } from "~/components/LoadingSpinner";
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import {
@@ -25,7 +23,7 @@ export async function getStaticProps( context: GetStaticPropsContext<{ email: st
     ctx: {db, session: null},
     transformer: superjson, 
   });
-  const email = context.params?.email as string;
+  const email = context.params!.email;
   await helpers.user.getUserByEmail.prefetch({ email });
 
   return {
@@ -64,7 +62,7 @@ const Home : NextPage<PageProps> = (props) => {
       <Header />
       <main className=" flex min-h-screen flex-col justify-center items-center py-8 gap-4">
         <div className="bg-white p-4 rounded-md h-1/2 w-3/4 flex gap-8">
-          <Image src={userData.image || ''} alt={userData.name || ''} width={64} height={64} className="rounded-full"/>
+          <Image src={userData.image ?? ''} alt={userData.name ?? ''} width={64} height={64} className="rounded-full"/>
           <div className="text-right flex flex-col">
             <h1 className="text-4xl font-bold">
               {userData.name}
