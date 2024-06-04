@@ -44,20 +44,18 @@ export default function Home() {
 }
 
 function IntroBloc() {
-  const { data: sessionData } = useSession();
-
-  const formatName = (name: string | undefined | null) => {
-    return name?.split(" ")[0];
-  }
-
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <p className="text-center text-2xl text-white">
-        {sessionData && <span>Hey {formatName(sessionData.user?.name)}&#128075;</span>}
+      <h1 className="text-2xl font-bold">
+        Welcome to Lyredium!
+      </h1>
+      <p>
+        This is a <span className="line-through">trial website</span> blogging platform for sharing your thoughts and ideas.
+        <br />
+        Sign in to start your journey.
       </p>
-      {!sessionData && <AuthBtn text={"Get started!"} 
-        onClick={() => void signIn()}
-        isTransparent={false}/>}
+      <AuthBtn text={"Get started!"} 
+        onClick={() => void signIn()}/>
     </div>
   );
 }

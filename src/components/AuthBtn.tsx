@@ -2,13 +2,12 @@
 interface AuthBtnProps {
     text: string,
     onClick: () => void,
-    isTransparent: boolean
 }
 
 export const AuthBtn = (props: AuthBtnProps) => {
     return (
         <button
-        className={`rounded-full ${props.isTransparent ? "bg-transparent" : "bg-white/20"} px-10 py-3 font-semibold no-underline transition hover:bg-white/20`}
+        className={`px-6 py-2 bg-black text-white rounded-md transition hover:bg-white/20 hover:text-black flex justify-center items-center h-8`}
         onClick={props.onClick}
         >
             {props.text}
