@@ -5,7 +5,7 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 
 import { Header } from "~/components/Header";
-import { AuthBtn } from "~/components/AuthBtn";
+import { Btn } from "~/components/Btn";
 import { LoadingSpinner } from "~/components/LoadingSpinner";
 
 export default function Home() {
@@ -54,8 +54,9 @@ function IntroBloc() {
         <br />
         Sign in to start your journey.
       </p>
-      <AuthBtn text={"Get started!"} 
-        onClick={() => void signIn()}/>
+      <Btn text={"Get started!"} 
+        onClick={() => void signIn()}
+        lightScheme={false}/>
     </div>
   );
 }
