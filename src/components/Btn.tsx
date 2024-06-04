@@ -5,7 +5,7 @@ interface BtnProps {
     lightScheme: boolean
 }
 
-export const Btn = (props: BtnProps) => {
+const Btn = (props: BtnProps) => {
     return (
         <button
         className={`px-6 py-2 rounded-md transition flex justify-center items-center h-8 
@@ -16,3 +16,7 @@ export const Btn = (props: BtnProps) => {
       </button>
     )
 }
+
+export default Btn;
+
+

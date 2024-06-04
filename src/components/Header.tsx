@@ -1,10 +1,10 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 
-import { Btn } from "./Btn";
+import Btn from "./Btn";
 
 import Link from "next/link";
 
-export const Header = () => {
+const Header = () => {
     const { data: sessionData } = useSession();
 
     return (
@@ -27,3 +27,6 @@ export const Header = () => {
         </header>
     )
 }
+
+export default Header;
+
