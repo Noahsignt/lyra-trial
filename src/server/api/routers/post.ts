@@ -9,6 +9,7 @@ import {
 type filteredPostInfo = {
   id: number,
   title: string,
+  intro: string,
   content: string,
   createdAt: Date,
   updatedAt: Date,
@@ -62,16 +63,42 @@ export const postRouter = createTRPCRouter({
     return posts;
   }),
 
+  getPostById: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
+    const post = await ctx.db.post.findUnique({
+      where: { id: input.id }
+    });
+
+    if(!post) {
+      return null;
+    }
+
+    const userInfo = await ctx.db.user.findUnique({
+      where: { id: post.createdById }
+    });
+
+    if(!userInfo) {
+      return null;
+    }
+
+    return {
+      ...post,
+      img: userInfo.image,
+      name: userInfo.name,
+    } as filteredPostInfo;
+  }),
+
   create: protectedProcedure
     .input(z.object({ 
       title: z.string().min(1),
       content: z.string().min(1),
+      intro: z.string().min(1)
      }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.post.create({
         data: {
           title: input.title,
           content: input.content,
+          intro: input.intro,
           createdBy: { connect: { id: ctx.session.user.id } },
         },
       });
