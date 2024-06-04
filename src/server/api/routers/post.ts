@@ -6,6 +6,16 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
+type filteredPostInfo = {
+  id: number,
+  title: string,
+  content: string,
+  createdAt: Date,
+  updatedAt: Date,
+  img: string,
+  name: string
+}
+
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.db.post.findMany({
@@ -28,14 +38,28 @@ export const postRouter = createTRPCRouter({
 
     const postsWithUser = posts.map((post) => {
       const foundUser = users.find((user) => user.id === post.createdById);
+
+      if(!foundUser) {
+        return null;
+      }
+
       return {
         ...post,
-        img: foundUser?.image,
-        name: foundUser?.name,
+        img: foundUser.image,
+        name: foundUser.name,
       }
     });
 
-    return postsWithUser
+    return postsWithUser.filter((post) => post !== null) as filteredPostInfo[];
+  }),
+
+  getPostsByUserId: publicProcedure.input(z.object({ userId: z.string() })).query(async ({ ctx, input }) => {
+    const posts = await ctx.db.post.findMany({
+      where: { createdById: input.userId },
+      orderBy: { createdAt: "desc" }
+    });
+
+    return posts;
   }),
 
   create: protectedProcedure

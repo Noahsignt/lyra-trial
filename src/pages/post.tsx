@@ -1,4 +1,4 @@
-import { Header } from "~/components/Header"
+import Header from "~/components/Header"
 
 import { useSession } from "next-auth/react"
 import { api } from "~/utils/api"

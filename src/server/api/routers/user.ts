@@ -13,11 +13,15 @@ export const userRouter = createTRPCRouter({
         where: { email: input.email },
     });
 
+      if(!user){
+        return null;
+      }
+
       return {
-        id: user?.id,
-        name: user?.name,
-        email: user?.email,
-        image: user?.image,
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
       };
     }),
 });
