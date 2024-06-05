@@ -76,9 +76,6 @@ const Home : NextPage<PageProps> = (props) => {
             </h2>
           </div>
         </div>
-        {!isLoading ? postsData?.map((post) => (
-          <PostView key={post.id} post={post} />
-        )) : <LoadingSpinner />}
       </main>
     </>
   );

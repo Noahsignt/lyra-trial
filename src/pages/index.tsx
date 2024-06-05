@@ -24,12 +24,14 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className=" flex min-h-screen flex-col justify-center items-center py-8 gap-4">
-        {isLoaded ? isAuth ? posts?.map((post) => (
-          <PostView post={post} key={post.id} />
-        )) : 
-        <IntroBloc />
- : <LoadingSpinner />}
+      <main className="flex min-h-screen flex-col justify-center items-center py-8 gap-4">
+        <div className="flex flex-col w-full sm:w-1/2">
+              {isLoaded ? isAuth ? posts?.map((post) => (
+                <PostView post={post} key={post.id} />
+              )) : 
+              <IntroBloc />
+              : <LoadingSpinner />}
+        </div>
       </main>
     </>
   );
