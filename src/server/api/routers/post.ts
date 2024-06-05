@@ -112,4 +112,18 @@ export const postRouter = createTRPCRouter({
         },
       });
     }),
+
+  delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(async ({ ctx, input }) => {
+    const post = await ctx.db.post.findUnique({
+      where: { id: input.id },
+    });
+
+    if (!post || post.createdById !== ctx.session.user.id) {
+      throw new Error("Unauthorized to delete this post.");
+    }
+
+    return ctx.db.post.delete({
+      where: { id: input.id },
+    });
+  })
 });

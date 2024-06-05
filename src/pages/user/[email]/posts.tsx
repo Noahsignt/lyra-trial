@@ -7,7 +7,8 @@ import { useSession } from "next-auth/react";
 import Header from "~/components/Header";
 import LoadingSpinner from "~/components/LoadingSpinner";
 import PostView from "~/components/PostView";
-import Btn from "~/components/Btn";
+
+import { useEffect, useState } from "react";
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import {
@@ -56,7 +57,7 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
         return <div>404: User not found</div>;
     }
 
-    const { data: postData, isLoading: postsLoading } = api.post.getPostsByUserEmail.useQuery({ email: email });
+    const { data: postData, isLoading: postsLoading, refetch: refetchPosts } = api.post.getPostsByUserEmail.useQuery({ email: email });
 
     const isLoading = postsLoading && sessionLoading === 'loading';
 
@@ -66,7 +67,19 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
 
     const YourPosts = () => {
         const router = useRouter();
-    
+        const { mutate: deletePost } = api.post.delete.useMutation({
+            onSuccess: () => {
+                refetchPosts();  
+            },
+            onError: (error) => {
+                console.error("Error deleting post:", error);
+            }
+        });
+
+        const handlePostDeleted = async (id: number) => {
+            deletePost({ id: id });
+        };
+
         return(
             <div className="flex flex-col items-center w-1/2 py-16">
                 <div className="flex justify-between w-full border-b-2 border-gray-200 py-2">
@@ -78,7 +91,7 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
                 {!isLoading ?
                 <div className="flex flex-col justify-center items-center gap-4 w-full">
                     {postData?.map((post) => (
-                        <PostView key={post.id} post={post} onUserPage={true}/>
+                        <PostView key={post.id} post={post} onUserPage={true} onPostDeleted={() => handlePostDeleted(post.id)} />
                     ))}
                 </div>  
                     :

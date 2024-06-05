@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import { useRouter } from "next/router";
 
+import { api } from "~/utils/api";
+
 interface PostViewProps {
     post: {
         id: number,
@@ -15,7 +17,8 @@ interface PostViewProps {
         updatedAt: Date,
         intro: string
     },
-    onUserPage?: boolean
+    onUserPage?: boolean,
+    onPostDeleted?: () => void
 }
 
 const EditSVG = () => {
@@ -24,11 +27,10 @@ const EditSVG = () => {
     )
 }
 
-const PostView = (props: PostViewProps) => {
+const PostView = ({post, onUserPage = false, onPostDeleted = () => {}}: PostViewProps) => {
     const router = useRouter();
 
     const [ isDropdownOpen, setIsDropdownOpen ]= useState(false);
-    const { post } = props;
 
     return (
         <Link href={`/post/${post.id}`} key={post.id} className="w-full">
@@ -43,7 +45,7 @@ const PostView = (props: PostViewProps) => {
                 <div>
                     <h1 className="text-2xl font-bold">{post.title}</h1>
                     <p className="text-gray-500">{post.intro}</p>
-                    {props.onUserPage && 
+                    {onUserPage && 
                     <div className="flex justify-between text-gray-500 relative">
                         <p>Published on {post.createdAt.toLocaleDateString()}</p>
                         <button onClick={(e) => { e.preventDefault(); setIsDropdownOpen(!isDropdownOpen); }} className="text-gray-500">
@@ -52,7 +54,7 @@ const PostView = (props: PostViewProps) => {
                         {isDropdownOpen && (
                             <div className="flex flex-col gap-2  items-start absolute right-0 mt-8 mr-2 bg-white p-4 rounded-md border-2 border-gray-100 w-32 shadow">
                                 <button onClick={(e) => {e.preventDefault(); router.push(`/post/${post.id}/edit`)}} className="text-gray-500 hover:text-gray-700 text-sm">Edit story</button>
-                                <button onClick={(e) => {e.preventDefault();}} className="text-red-500 hover:text-red-700 text-sm">Delete story</button>
+                                <button onClick={(e) => {e.preventDefault(); onPostDeleted(); }} className="text-red-500 hover:text-red-700 text-sm">Delete story</button>
                             </div>
                         )}
                     </div>}
