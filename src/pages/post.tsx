@@ -1,5 +1,8 @@
 import Header from "~/components/Header"
 
+import Image from "next/image";
+import { useRouter } from "next/router";
+
 import { useSession } from "next-auth/react"
 import { api } from "~/utils/api"
 import { useState } from "react";
@@ -8,6 +11,8 @@ export default function Post() {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [intro, setIntro] = useState("");
+
+    const router = useRouter();
 
     const { data: sessionData } = useSession();
     const user = sessionData?.user;
@@ -20,7 +25,7 @@ export default function Post() {
             intro: intro
         }, {
             onSuccess: () => {
-                window.location.href = '/';
+                router.push('/');
             },
             onError: (error) => {
                 //handle error
@@ -35,7 +40,7 @@ export default function Post() {
             <div className="flex items-center justify-between gap-x-2">
                 <h1 className="text-2xl font-bold">{user?.name}</h1>
                 <div className="flex items-center gap-x-2">
-                    <img src={user?.image ?? ""} alt={user?.name ?? ""} className="w-10 h-10 rounded-full" />
+                    <Image src={user?.image ?? ""} alt={user?.name ?? ""} width={40} height={40} className="rounded-full" />
                     <p>{user?.email}</p>
                 </div>
             </div>

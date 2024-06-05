@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import { useState } from "react";
 
@@ -37,7 +38,7 @@ const PostView = ({post, onUserPage = false, onPostDeleted = () => {}}: PostView
             <div className="bg-white p-4 rounded-md flex flex-col gap-2 px-4 border-b-2 border-gray-200">
                 {post.img && post.name && 
                 <div className="flex items-center gap-1">
-                    <img src={post.img} alt={post.name} className="w-5 h-5 rounded-full" />
+                    <Image src={post.img} alt={post.name} width={20} height={20} className="rounded-full" />
                     <p className="text-xs">{post.name}</p>
                     <p>·</p>
                     <p className="text-xs italic">{post.createdAt.toLocaleDateString()}</p>
