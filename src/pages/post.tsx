@@ -25,10 +25,14 @@ export default function Post() {
             intro: intro
         }, {
             onSuccess: () => {
-                router.push('/');
+                router.push('/').then(() => {
+                    return;
+                }).catch((error) => {
+                    console.log(error);
+                });
             },
             onError: (error) => {
-                //handle error
+                console.log(error);
             }
         })
 

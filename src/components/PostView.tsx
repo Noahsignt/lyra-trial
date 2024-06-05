@@ -28,7 +28,7 @@ const EditSVG = () => {
     )
 }
 
-const PostView = ({post, onUserPage = false, onPostDeleted = () => {}}: PostViewProps) => {
+const PostView = ({post, onUserPage = false, onPostDeleted}: PostViewProps) => {
     const router = useRouter();
 
     const [ isDropdownOpen, setIsDropdownOpen ]= useState(false);
@@ -54,8 +54,8 @@ const PostView = ({post, onUserPage = false, onPostDeleted = () => {}}: PostView
                         </button>
                         {isDropdownOpen && (
                             <div className="flex flex-col gap-2  items-start absolute right-0 mt-8 mr-2 bg-white p-4 rounded-md border-2 border-gray-100 w-32 shadow">
-                                <button onClick={(e) => {e.preventDefault(); router.push(`/post/${post.id}/edit`)}} className="text-gray-500 hover:text-gray-700 text-sm">Edit story</button>
-                                <button onClick={(e) => {e.preventDefault(); onPostDeleted(); }} className="text-red-500 hover:text-red-700 text-sm">Delete story</button>
+                                <button onClick={async (e) => {e.preventDefault(); await router.push(`/post/${post.id}/edit`)}} className="text-gray-500 hover:text-gray-700 text-sm">Edit story</button>
+                                <button onClick={(e) => {e.preventDefault(); onPostDeleted ? onPostDeleted() : null; }} className="text-red-500 hover:text-red-700 text-sm">Delete story</button>
                             </div>
                         )}
                     </div>}

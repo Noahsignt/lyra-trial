@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import Header from "~/components/Header";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
@@ -55,20 +55,28 @@ const Edit : NextPage<PageProps> = (props) => {
         id: Number(router.query.id)
     });
 
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
+    const [intro, setIntro] = useState("");
+
+    useEffect(() => {
+        if (postData) {
+            setTitle(postData.title);
+            setContent(postData.content);
+            setIntro(postData.intro);
+        }
+    }, [postData]); 
+
     if(!postData) {
         return <div>404: Post not found</div>
     }
 
-    const [title, setTitle] = useState(postData.title);
-    const [content, setContent] = useState(postData.content);
-    const [intro, setIntro] = useState(postData.intro);
-
     const user = sessionData?.user;
     const { mutate: updatePost } = api.post.updateById.useMutation();
-    
-    const onClick = () => {
+
+    const onClick = async () => {
         updatePost({id: postData.id, title, content, intro});
-        router.push(`/post/${postData.id}`);
+        await router.push(`/post/${postData.id}`);
     }
 
     const Byline = () => {

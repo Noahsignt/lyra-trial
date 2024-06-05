@@ -68,8 +68,8 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
     const YourPosts = () => {
         const router = useRouter();
         const { mutate: deletePost } = api.post.delete.useMutation({
-            onSuccess: () => {
-                refetchPosts();  
+            onSuccess: async () => {
+                await refetchPosts();  
             },
             onError: (error) => {
                 console.error("Error deleting post:", error);
