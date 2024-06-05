@@ -87,6 +87,24 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
         )
     }
 
+    const OtherPosts = () => {
+        return(
+            <div className="flex flex-col items-center w-1/2 py-16">
+                <div className="flex justify-between w-full border-b-2 border-gray-200 py-2">
+                    <h1 className="text-4xl">{userData.name}&apos;s Stories</h1>
+                </div>
+                {!isLoading ?
+                <div className="flex flex-col justify-center items-center gap-4 w-full">
+                    {postData?.map((post) => (
+                        <PostView key={post.id} post={post} />
+                    ))}
+                </div>  
+                    :
+                <LoadingSpinner />}
+            </div>
+        )
+    }
+
     return(
         <>
             <Head>
@@ -96,7 +114,7 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
             </Head>
             <Header />
             <main className="flex flex-col justify-center items-center">
-                {isUser() && <YourPosts />} 
+                {isUser() ? <YourPosts /> : <OtherPosts />} 
             </main>
         </>
     )

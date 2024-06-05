@@ -56,6 +56,9 @@ const Header = () => {
                     <StoriesSelectionSVG />
                     Stories
                 </Link>
+                <button onClick={() => signOut()} className="bg-white p-2 rounded-md flex text-gray-600 gap-1 flex gap-5 hover:text-black">
+                    Sign out
+                </button>
             </div>}
         </header>
     )
