@@ -25,7 +25,7 @@ export default function Home() {
       </Head>
       <Header />
       <main className="flex min-h-screen flex-col justify-center items-center py-8 gap-4">
-        <div className="flex flex-col w-full sm:w-1/2">
+        <div className="flex flex-col justify-center items-center w-full sm:w-1/2">
               {isLoaded ? isAuth ? posts?.map((post) => (
                 <PostView post={post} key={post.id} />
               )) : 

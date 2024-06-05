@@ -78,7 +78,7 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
                 {!isLoading ?
                 <div className="flex flex-col justify-center items-center gap-4 w-full">
                     {postData?.map((post) => (
-                        <PostView key={post.id} post={post} />
+                        <PostView key={post.id} post={post} onUserPage={true}/>
                     ))}
                 </div>  
                     :
@@ -96,7 +96,7 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
                 {!isLoading ?
                 <div className="flex flex-col justify-center items-center gap-4 w-full">
                     {postData?.map((post) => (
-                        <PostView key={post.id} post={post} />
+                        <PostView key={post.id} post={post}/>
                     ))}
                 </div>  
                     :
