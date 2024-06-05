@@ -64,9 +64,11 @@ const Edit : NextPage<PageProps> = (props) => {
     const [intro, setIntro] = useState(postData.intro);
 
     const user = sessionData?.user;
+    const { mutate: updatePost } = api.post.updateById.useMutation();
     
     const onClick = () => {
-        
+        updatePost({id: postData.id, title, content, intro});
+        router.push(`/post/${postData.id}`);
     }
 
     const Byline = () => {
