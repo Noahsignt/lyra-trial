@@ -1,12 +1,12 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from 'next/image';
+import { useState } from 'react';
 
 import { api } from "~/utils/api";
 
 import Header from "~/components/Header";
 import LoadingSpinner from "~/components/LoadingSpinner";
-import PostView from "~/components/PostView";
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import {
@@ -47,6 +47,7 @@ export const getStaticPaths: GetStaticPaths =  () => {
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const Home : NextPage<PageProps> = (props) => {
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const { data: sessionData } = useSession();
   const { data: userData } = api.user.getUserByEmail.useQuery({ email: props.email })
   
@@ -54,7 +55,69 @@ const Home : NextPage<PageProps> = (props) => {
     return <div>404</div>
   }
 
-  const { data: postsData, isLoading } = api.post.getPostsByUserId.useQuery({ userId: userData.id })
+  const isLoading = () => {
+    return !sessionData;
+  }
+
+  const isUsersPage = () => {
+    return sessionData && sessionData.user.id === userData.id;
+  }
+
+  //renders the card to edit profile details, overlaid over the page we are currently on. 
+  const ProfileEditCard = ({ onClose } : {onClose: () => void}) => {
+    const [name, setName] = useState(userData.name);
+    const [bio, setBio] = useState('dummy');
+
+    const CloseSVG = () => {
+      return <svg width="24" height="24" viewBox="0 0 24 24" fill="#d1d5db" className="text-gray-400"><path d="M5 5l7 7m7 7l-7-7m0 0l7-7m-7 7l-7 7" stroke="currentColor" stroke-linecap="round"></path></svg>
+    }
+
+    return (
+      <div className="fixed top-0 left-0 w-screen h-screen z-10 bg-black/30 flex items-center justify-center" onClick={() => setIsEditOpen(false)}>
+        <div className="relative w-full h-full sm:w-3/5 lg:w-2/5 sm:h-3/4 flex flex-col z-20 bg-white rounded-md py-8 opacity-100 gap-10" onClick={(e) => e.stopPropagation()}>
+          <div className="absolute right-5 top-5 cursor-pointer" onClick={() => onClose()}>
+            <CloseSVG />
+          </div>
+          <div className="flex justify-center">
+            <h1 className="text-xl font-medium">
+              Profile information
+            </h1>
+          </div>
+        <div className="flex flex-col px-8 gap-4 h-full">
+          <p className="text-sm text-gray-400">Photo</p>
+          <div className="flex py-2 gap-4 sm:gap-8">
+            <Image src={`${userData.image}`} alt={`${userData.name}'s profile picture`} width={72} height={72} className="rounded-full h-14 w-14 sm:h-18 sm:w-18"/>
+            <div className="flex flex-col justify-between">
+              <div className="flex gap-4">
+                <button className="bg-transparent text-sm font-light text-green-700 hover:text-green-900">
+                  Update
+                </button>
+                <button className="bg-transparent text-sm font-light text-red-500 hover:text-red-700">
+                  Remove
+                </button>
+              </div>
+              <p className="text-sm text-gray-400">
+                Recommended: Square JPG, PNG, or GIF, at least 1,000 pixels per side.
+              </p>
+            </div>
+          </div>
+          <label htmlFor="name" className="text-sm">Name*</label>
+          <input type="text" name="name" onChange={(e) => setName(e.target.value)} value={userData.name} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
+          <label htmlFor="bio" className="text-sm">Short bio</label>
+          <input type="text" name="bio" onChange={(e) => setBio(e.target.value)} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
+          <div className="flex justify-end items-end flex-grow gap-4">
+            <button className="rounded-full border-2  px-3 py-2 border-green-600 text-green-600 hover:border-green-800 hover:text-green-800 text-sm">
+              Cancel
+            </button>
+            <button className="rounded-full border-2  px-3 py-2 text-white bg-green-600 hover:bg-green-800 text-sm">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    )
+  }
 
   return (
     <>
@@ -64,19 +127,26 @@ const Home : NextPage<PageProps> = (props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className=" flex min-h-screen flex-col justify-start items-center py-8 gap-4">
-        <div className="bg-white p-4 rounded-md h-1/2 w-3/4 flex gap-8">
-          <Image src={userData.image ?? ''} alt={userData.name ?? ''} width={64} height={64} className="rounded-full"/>
-          <div className="text-right flex flex-col">
-            <h1 className="text-4xl font-bold">
+      <main className="mx-auto min-h-screen w-full lg:w-3/4">
+        {!isLoading() ?
+        <div className="grid grid-cols-4 min-h-screen">
+          <div className="col-start-1 col-end-4 border-r-2 border-gray-100 px-8 py-16">
+            <h1 className="text-4xl font-medium">
               {userData.name}
             </h1>
-            <h2 className="italic">
-              {userData.email}
-            </h2>
+          </div> 
+          <div className="flex flex-col items-start py-10 px-8 gap-4">
+            <Image src={`${userData.image}`} alt={`${userData.name}'s profile picture`} width={88} height={88} className="rounded-full"/>
+            <p className="font-medium">{userData.name}</p>
+            <button className="bg-transparent text-green-700 hover:text-green-900" onClick={() => setIsEditOpen(true)}>
+              Edit Profile
+            </button>
           </div>
-        </div>
+        </div> :
+        <LoadingSpinner />
+        }
       </main>
+      {isEditOpen && <ProfileEditCard onClose={() => setIsEditOpen(false)}/>}
     </>
   );
 }
