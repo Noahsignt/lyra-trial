@@ -66,7 +66,7 @@ const Home : NextPage<PageProps> = (props) => {
   //renders the card to edit profile details, overlaid over the page we are currently on. 
   const ProfileEditCard = ({ onClose } : {onClose: () => void}) => {
     const [name, setName] = useState(userData.name);
-    const [bio, setBio] = useState('dummy');
+    const [bio, setBio] = useState(userData.bio);
 
     const CloseSVG = () => {
       return <svg width="24" height="24" viewBox="0 0 24 24" fill="#d1d5db" className="text-gray-400"><path d="M5 5l7 7m7 7l-7-7m0 0l7-7m-7 7l-7 7" stroke="currentColor" stroke-linecap="round"></path></svg>
@@ -102,9 +102,9 @@ const Home : NextPage<PageProps> = (props) => {
             </div>
           </div>
           <label htmlFor="name" className="text-sm">Name*</label>
-          <input type="text" name="name" onChange={(e) => setName(e.target.value)} value={userData.name} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
+          <input type="text" name="name" onChange={(e) => setName(e.target.value)} value={name} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <label htmlFor="bio" className="text-sm">Short bio</label>
-          <input type="text" name="bio" onChange={(e) => setBio(e.target.value)} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
+          <input type="text" name="bio" onChange={(e) => setBio(e.target.value)} value={bio} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <div className="flex justify-end items-end flex-grow gap-4">
             <button className="rounded-full border-2  px-3 py-2 border-green-600 text-green-600 hover:border-green-800 hover:text-green-800 text-sm">
               Cancel
