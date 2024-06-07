@@ -24,6 +24,10 @@ const config = {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'lyra-profile-pictures.s3.ap-southeast-2.amazonaws.com',
+      }
     ],
   },
 };

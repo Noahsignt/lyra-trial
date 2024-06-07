@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import {
   createTRPCRouter,
+  protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
 
@@ -25,4 +26,20 @@ export const userRouter = createTRPCRouter({
         bio: user.bio
       };
     }),
+    updateImage: protectedProcedure
+    .input(z.object({image: z.string()}))
+    .mutation(async ({ctx, input}) => {
+      if(ctx.session.user.id !== ctx.session.user.id){
+        return {
+          error: "You are not authorized to update this user"
+        }
+      }
+
+      const user = await ctx.db.user.update({
+        where: {id: ctx.session.user.id},
+        data: {image: input.image}
+      })
+
+      return user;
+    })
 });

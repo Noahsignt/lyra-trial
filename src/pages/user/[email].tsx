@@ -67,6 +67,46 @@ const Home : NextPage<PageProps> = (props) => {
   const ProfileEditCard = ({ onClose } : {onClose: () => void}) => {
     const [name, setName] = useState(userData.name);
     const [bio, setBio] = useState(userData.bio);
+    const [img, setImg] = useState<File | undefined>(undefined);
+    const [imgUrl, setImgUrl] = useState(userData.image);
+
+    const { mutate: generateURL } = api.profilePicture.generatePresignedURL.useMutation();
+    const { mutate: updateImage } = api.user.updateImage.useMutation();
+
+    //handles front-end state for new profile picture, updates preview so that user can see their selection
+    const handleNewFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+
+      if (file) {
+        setImg(file);
+        setImgUrl(URL.createObjectURL(file));
+      }
+    }
+
+    //handles back-end state for submitting changes to name/bio/image
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      //exit if image hasn't changed
+      if(!img){
+        return;
+      }
+
+      //pass undefined as generateURL relys entirely on user ctx and no parameters
+      generateURL(undefined, {onSuccess: async (data: string) => {
+        fetch(data, {method: 'PUT', body: img}).then(res => {
+          //update prisma link
+          updateImage({
+            //strip query string
+            image: new URL(res.url).origin + new URL(res.url).pathname
+          })
+        }).catch(error => {
+          return;
+        }).catch
+      }, onError: (error) => {
+        return;
+      }});
+    }
 
     const CloseSVG = () => {
       return <svg width="24" height="24" viewBox="0 0 24 24" fill="#d1d5db" className="text-gray-400"><path d="M5 5l7 7m7 7l-7-7m0 0l7-7m-7 7l-7 7" stroke="currentColor" stroke-linecap="round"></path></svg>
@@ -83,15 +123,16 @@ const Home : NextPage<PageProps> = (props) => {
               Profile information
             </h1>
           </div>
-        <div className="flex flex-col px-8 gap-4 h-full">
+        <form onSubmit={(e) => onSubmit(e)} className="flex flex-col px-8 gap-4 h-full">
           <p className="text-sm text-gray-400">Photo</p>
           <div className="flex py-2 gap-4 sm:gap-8">
-            <Image src={`${userData.image}`} alt={`${userData.name}'s profile picture`} width={72} height={72} className="rounded-full h-14 w-14 sm:h-18 sm:w-18"/>
+            <Image src={`${imgUrl}`} alt={`${userData.name}'s profile picture`} width={72} height={72} className="rounded-full h-16 sm:h-18"/>
             <div className="flex flex-col justify-between">
               <div className="flex gap-4">
-                <button className="bg-transparent text-sm font-light text-green-700 hover:text-green-900">
+                <label htmlFor="pfp-upload" className="cursor-pointer bg-transparent text-sm font-light text-green-700 hover:text-green-900">
                   Update
-                </button>
+                </label>
+                <input id="pfp-upload" type="file" accept="image/*" className="hidden" onChange={(e) => handleNewFile(e)} aria-label="Update profile picture"/>
                 <button className="bg-transparent text-sm font-light text-red-500 hover:text-red-700">
                   Remove
                 </button>
@@ -106,14 +147,14 @@ const Home : NextPage<PageProps> = (props) => {
           <label htmlFor="bio" className="text-sm">Short bio</label>
           <input type="text" name="bio" onChange={(e) => setBio(e.target.value)} value={bio} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <div className="flex justify-end items-end flex-grow gap-4">
-            <button className="rounded-full border-2  px-3 py-2 border-green-600 text-green-600 hover:border-green-800 hover:text-green-800 text-sm">
+            <button onClick={() => onClose()} className="rounded-full border-2  px-3 py-2 border-green-600 text-green-600 hover:border-green-800 hover:text-green-800 text-sm">
               Cancel
             </button>
-            <button className="rounded-full border-2  px-3 py-2 text-white bg-green-600 hover:bg-green-800 text-sm">
+            <button type="submit" className="rounded-full border-2  px-3 py-2 text-white bg-green-600 hover:bg-green-800 text-sm">
               Save
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
     )
@@ -136,7 +177,7 @@ const Home : NextPage<PageProps> = (props) => {
             </h1>
           </div> 
           <div className="flex flex-col items-start py-10 px-8 gap-4">
-            <Image src={`${userData.image}`} alt={`${userData.name}'s profile picture`} width={88} height={88} className="rounded-full"/>
+            <Image src={`${userData.image}`} alt={`${userData.name}'s profile picture`} width={88} height={88} className="h-20 rounded-full"/>
             <p className="font-medium">{userData.name}</p>
             <button className="bg-transparent text-green-700 hover:text-green-900" onClick={() => setIsEditOpen(true)}>
               Edit Profile
