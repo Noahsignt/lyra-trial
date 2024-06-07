@@ -69,9 +69,14 @@ const Home : NextPage<PageProps> = (props) => {
     const [bio, setBio] = useState(userData.bio);
     const [img, setImg] = useState<File | undefined>(undefined);
     const [imgUrl, setImgUrl] = useState(userData.image);
+    const [hasChanged, setHasChanged] = useState(false);
 
     const { mutate: generateURL } = api.profilePicture.generatePresignedURL.useMutation();
     const { mutate: updateImage } = api.user.updateImage.useMutation();
+
+    const calculateHasChanged = () => {
+      setHasChanged(name === userData.name && bio === userData.bio && img === undefined);
+    }
 
     //handles front-end state for new profile picture, updates preview so that user can see their selection
     const handleNewFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,25 +92,40 @@ const Home : NextPage<PageProps> = (props) => {
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      //exit if image hasn't changed
-      if(!img){
+      //nothing has changed, should never be able to get here
+      if(!(hasChanged)){
         return;
       }
 
       //pass undefined as generateURL relys entirely on user ctx and no parameters
-      generateURL(undefined, {onSuccess: async (data: string) => {
-        fetch(data, {method: 'PUT', body: img}).then(res => {
-          //update prisma link
+      if(img){
+        generateURL(undefined, {onSuccess: async (data: string) => {
+          fetch(data, {method: 'PUT', body: img}).then(res => {
+            //update prisma link
           updateImage({
             //strip query string
             image: new URL(res.url).origin + new URL(res.url).pathname
-          })
-        }).catch(error => {
+          }, {onSuccess: () => {
+            //hard reload so image updated everywhere
+            window.location.reload();
+          }})
+          
+          }).catch(error => {
+            return;
+          }).catch
+        }, onError: (error) => {
           return;
-        }).catch
-      }, onError: (error) => {
-        return;
-      }});
+        }});
+      }
+    }
+
+    const SaveBtn = () => {
+      return hasChanged ? <button type="submit" className="rounded-full border-2  px-3 py-2 text-white bg-green-600 hover:bg-green-800 text-sm">
+        Save
+      </button> :
+      <button className="opacity-50 cursor-not-allowed rounded-full border-2  px-3 py-2 text-white bg-green-600 hover:bg-green-800 text-sm">
+        Save
+      </button>
     }
 
     const CloseSVG = () => {
@@ -132,7 +152,7 @@ const Home : NextPage<PageProps> = (props) => {
                 <label htmlFor="pfp-upload" className="cursor-pointer bg-transparent text-sm font-light text-green-700 hover:text-green-900">
                   Update
                 </label>
-                <input id="pfp-upload" type="file" accept="image/*" className="hidden" onChange={(e) => handleNewFile(e)} aria-label="Update profile picture"/>
+                <input id="pfp-upload" type="file" accept="image/*" className="hidden" onChange={(e) => {handleNewFile(e); calculateHasChanged();}} aria-label="Update profile picture"/>
                 <button className="bg-transparent text-sm font-light text-red-500 hover:text-red-700">
                   Remove
                 </button>
@@ -143,16 +163,14 @@ const Home : NextPage<PageProps> = (props) => {
             </div>
           </div>
           <label htmlFor="name" className="text-sm">Name*</label>
-          <input type="text" name="name" onChange={(e) => setName(e.target.value)} value={name} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
+          <input type="text" name="name" onChange={(e) => {setName(e.target.value); calculateHasChanged();}} value={name} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <label htmlFor="bio" className="text-sm">Short bio</label>
-          <input type="text" name="bio" onChange={(e) => setBio(e.target.value)} value={bio} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
+          <input type="text" name="bio" onChange={(e) => {setBio(e.target.value); calculateHasChanged();}} value={bio} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <div className="flex justify-end items-end flex-grow gap-4">
             <button onClick={() => onClose()} className="rounded-full border-2  px-3 py-2 border-green-600 text-green-600 hover:border-green-800 hover:text-green-800 text-sm">
               Cancel
             </button>
-            <button type="submit" className="rounded-full border-2  px-3 py-2 text-white bg-green-600 hover:bg-green-800 text-sm">
-              Save
-            </button>
+            <SaveBtn />
           </div>
         </form>
       </div>
