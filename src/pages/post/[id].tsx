@@ -1,20 +1,17 @@
-import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from 'next/image';
 
 import { api } from "~/utils/api";
 
 import Header from "~/components/Header";
-import LoadingSpinner from "~/components/LoadingSpinner";
-import PostView from "~/components/PostView";
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
-import {
+import type {
   GetStaticPaths,
   GetStaticPropsContext,
   InferGetStaticPropsType,
 } from 'next';
-import { NextPage} from "next";
+import type { NextPage} from "next";
 import superjson from 'superjson';
 import { appRouter } from '~/server/api/root';
 import { db } from '~/server/db';
@@ -47,7 +44,6 @@ export const getStaticPaths: GetStaticPaths =  () => {
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const Home : NextPage<PageProps> = (props) => {
-  const { data: sessionData } = useSession();
   const { data: postData } = api.post.getPostById.useQuery({ id: props.id })
   
   if(!postData) {

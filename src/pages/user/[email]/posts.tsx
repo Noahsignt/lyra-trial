@@ -8,15 +8,13 @@ import Header from "~/components/Header";
 import LoadingSpinner from "~/components/LoadingSpinner";
 import PostView from "~/components/PostView";
 
-import { useEffect, useState } from "react";
-
 import { createServerSideHelpers } from '@trpc/react-query/server';
-import {
+import type {
   GetStaticPaths,
   GetStaticPropsContext,
   InferGetStaticPropsType,
 } from 'next';
-import { NextPage} from "next";
+import type { NextPage} from "next";
 import superjson from 'superjson';
 import { appRouter } from '~/server/api/root';
 import { db } from '~/server/db';

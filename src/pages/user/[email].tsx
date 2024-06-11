@@ -9,12 +9,12 @@ import Header from "~/components/Header";
 import LoadingSpinner from "~/components/LoadingSpinner";
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
-import {
+import type {
   GetStaticPaths,
   GetStaticPropsContext,
   InferGetStaticPropsType,
 } from 'next';
-import { NextPage} from "next";
+import type { NextPage} from "next";
 import superjson from 'superjson';
 import { appRouter } from '~/server/api/root';
 import { db } from '~/server/db';
@@ -104,21 +104,22 @@ const Home : NextPage<PageProps> = (props) => {
       }
 
       //pass undefined as generateURL relys entirely on user ctx and no parameters
-      if(img){
-        generateURL(undefined, {onSuccess: async (data: string) => {
-          fetch(data, {method: 'PUT', body: img}).then(res => {
-            //update prisma link
-          updateImage({
-            //strip query string
-            image: new URL(res.url).origin + new URL(res.url).pathname
-          })
-          
-          }).catch(error => {
-            return;
-          }).catch
-        }, onError: (error) => {
-          return;
-        }});
+      if (img) {
+        generateURL(undefined, {
+          onSuccess: (data) => {
+            (async () => {
+              const res = await fetch(data, { method: 'PUT', body: img });
+              // Update Prisma link
+              updateImage({
+                // Strip query string
+                image: new URL(res.url).origin + new URL(res.url).pathname
+              });
+            })().catch((error) => console.log(error));
+          },
+          onError: (error) => {
+            console.error(error);
+          }
+        });
       }
 
       window.location.reload();
