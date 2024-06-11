@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from 'next/image';
-import { useState, useEffect, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import { api } from "~/utils/api";
 
