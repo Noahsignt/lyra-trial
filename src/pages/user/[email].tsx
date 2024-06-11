@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useEffect } from 'react';
 
 import { api } from "~/utils/api";
 
@@ -9,12 +9,12 @@ import Header from "~/components/Header";
 import LoadingSpinner from "~/components/LoadingSpinner";
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
-import {
+import type {
   GetStaticPaths,
   GetStaticPropsContext,
   InferGetStaticPropsType,
 } from 'next';
-import { NextPage} from "next";
+import type { NextPage} from "next";
 import superjson from 'superjson';
 import { appRouter } from '~/server/api/root';
 import { db } from '~/server/db';
@@ -123,6 +123,8 @@ const Home : NextPage<PageProps> = (props) => {
           return;
         }});
       }
+
+      window.location.reload();
     }
 
     const SaveBtn = () => {
@@ -170,7 +172,9 @@ const Home : NextPage<PageProps> = (props) => {
           </div>
           <label htmlFor="name" className="text-sm">Name*</label>
           <input type="text" name="name" onChange={(e) => {setName(e.target.value)}} value={name} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
+          <input type="text" name="name" onChange={(e) => {setName(e.target.value)}} value={name} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <label htmlFor="bio" className="text-sm">Short bio</label>
+          <input type="text" name="bio" onChange={(e) => {setBio(e.target.value)}} value={bio} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <input type="text" name="bio" onChange={(e) => {setBio(e.target.value)}} value={bio} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <div className="flex justify-end items-end flex-grow gap-4">
             <button onClick={() => onClose()} className="rounded-full border-2  px-3 py-2 border-green-600 text-green-600 hover:border-green-800 hover:text-green-800 text-sm">
