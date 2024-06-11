@@ -172,9 +172,7 @@ const Home : NextPage<PageProps> = (props) => {
           </div>
           <label htmlFor="name" className="text-sm">Name*</label>
           <input type="text" name="name" onChange={(e) => {setName(e.target.value)}} value={name} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
-          <input type="text" name="name" onChange={(e) => {setName(e.target.value)}} value={name} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <label htmlFor="bio" className="text-sm">Short bio</label>
-          <input type="text" name="bio" onChange={(e) => {setBio(e.target.value)}} value={bio} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <input type="text" name="bio" onChange={(e) => {setBio(e.target.value)}} value={bio} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <div className="flex justify-end items-end flex-grow gap-4">
             <button onClick={() => onClose()} className="rounded-full border-2  px-3 py-2 border-green-600 text-green-600 hover:border-green-800 hover:text-green-800 text-sm">
