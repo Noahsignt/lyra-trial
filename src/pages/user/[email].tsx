@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { api } from "~/utils/api";
 
@@ -73,10 +73,11 @@ const Home : NextPage<PageProps> = (props) => {
 
     const { mutate: generateURL } = api.profilePicture.generatePresignedURL.useMutation();
     const { mutate: updateImage } = api.user.updateImage.useMutation();
+    const { mutate: updateUserInfo } = api.user.updateInfo.useMutation();
 
-    const calculateHasChanged = () => {
-      setHasChanged(name === userData.name && bio === userData.bio && img === undefined);
-    }
+    useEffect(() => {
+      setHasChanged(!(name === userData.name && bio === userData.bio && img === undefined));
+    }, [bio, name, img]);
 
     //handles front-end state for new profile picture, updates preview so that user can see their selection
     const handleNewFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,6 +98,11 @@ const Home : NextPage<PageProps> = (props) => {
         return;
       }
 
+      //name or bio has changed
+      if(name !== userData.name || bio !== userData.bio){
+        updateUserInfo({name: name, bio: bio})
+      }
+
       //pass undefined as generateURL relys entirely on user ctx and no parameters
       if(img){
         generateURL(undefined, {onSuccess: async (data: string) => {
@@ -105,10 +111,7 @@ const Home : NextPage<PageProps> = (props) => {
           updateImage({
             //strip query string
             image: new URL(res.url).origin + new URL(res.url).pathname
-          }, {onSuccess: () => {
-            //hard reload so image updated everywhere
-            window.location.reload();
-          }})
+          })
           
           }).catch(error => {
             return;
@@ -117,6 +120,8 @@ const Home : NextPage<PageProps> = (props) => {
           return;
         }});
       }
+
+      window.location.reload();
     }
 
     const SaveBtn = () => {
@@ -152,7 +157,7 @@ const Home : NextPage<PageProps> = (props) => {
                 <label htmlFor="pfp-upload" className="cursor-pointer bg-transparent text-sm font-light text-green-700 hover:text-green-900">
                   Update
                 </label>
-                <input id="pfp-upload" type="file" accept="image/*" className="hidden" onChange={(e) => {handleNewFile(e); calculateHasChanged();}} aria-label="Update profile picture"/>
+                <input id="pfp-upload" type="file" accept="image/*" className="hidden" onChange={(e) => {handleNewFile(e)}} aria-label="Update profile picture"/>
                 <button className="bg-transparent text-sm font-light text-red-500 hover:text-red-700">
                   Remove
                 </button>
@@ -163,9 +168,9 @@ const Home : NextPage<PageProps> = (props) => {
             </div>
           </div>
           <label htmlFor="name" className="text-sm">Name*</label>
-          <input type="text" name="name" onChange={(e) => {setName(e.target.value); calculateHasChanged();}} value={name} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
+          <input type="text" name="name" onChange={(e) => {setName(e.target.value)}} value={name} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <label htmlFor="bio" className="text-sm">Short bio</label>
-          <input type="text" name="bio" onChange={(e) => {setBio(e.target.value); calculateHasChanged();}} value={bio} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
+          <input type="text" name="bio" onChange={(e) => {setBio(e.target.value)}} value={bio} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <div className="flex justify-end items-end flex-grow gap-4">
             <button onClick={() => onClose()} className="rounded-full border-2  px-3 py-2 border-green-600 text-green-600 hover:border-green-800 hover:text-green-800 text-sm">
               Cancel

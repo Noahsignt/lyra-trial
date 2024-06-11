@@ -41,5 +41,21 @@ export const userRouter = createTRPCRouter({
       })
 
       return user;
+    }),
+    updateInfo: protectedProcedure
+    .input(z.object({name: z.string().min(1), bio: z.string()}))
+    .mutation(async ({ctx, input}) => {
+      if(ctx.session.user.id !== ctx.session.user.id){
+        return {
+          error: "You are not authorized to update this user"
+        }
+      }
+
+      const user = await ctx.db.user.update({
+        where: {id: ctx.session.user.id},
+        data: {name: input.name, bio: input.bio}
+      })
+
+      return user;
     })
 });
