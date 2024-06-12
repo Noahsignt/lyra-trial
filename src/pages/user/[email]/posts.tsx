@@ -91,7 +91,7 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
                     {postData?.map((post) => (
                         <PostView key={post.id} post={post} onUserPage={true} onPostDeleted={() => handlePostDeleted(post.id)} />
                     ))}
-                </div>  
+                </div>
                     :
                 <LoadingSpinner />}
             </div>

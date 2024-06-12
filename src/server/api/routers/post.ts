@@ -20,38 +20,19 @@ type filteredPostInfo = {
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.db.post.findMany({
-      take: 5,
-      orderBy: { createdAt: "desc" }
-    });
-
-    // return empty array or prisma will return all users
-    if(!(posts?.length)){
-      return []
-    }
-
-    const users = await ctx.db.user.findMany({
-      where: { id: { in: posts.map((post) => post.createdById) } },
-    });
-
-    if(!users){
-      return [];
-    }
-
-    const postsWithUser = posts.map((post) => {
-      const foundUser = users.find((user) => user.id === post.createdById);
-
-      if(!foundUser) {
-        return null;
-      }
-
-      return {
-        ...post,
-        img: foundUser.image,
-        name: foundUser.name,
+      take: 15,
+      orderBy: { createdAt: "desc" },
+      include: {
+        createdBy: {
+          select: {
+            image: true,
+            name: true
+          }
+        }
       }
     });
 
-    return postsWithUser.filter((post) => post !== null) as filteredPostInfo[];
+    return posts;
   }),
 
   getPostsByUserId: publicProcedure.input(z.object({ userId: z.string() })).query(async ({ ctx, input }) => {
@@ -66,7 +47,15 @@ export const postRouter = createTRPCRouter({
   getPostsByUserEmail: publicProcedure.input(z.object({ email: z.string() })).query(async ({ ctx, input }) => {
     const posts = await ctx.db.post.findMany({
       where: { createdBy: { email: input.email } },
-      orderBy: { createdAt: "desc" }
+      orderBy: { createdAt: "desc" },
+      include: {
+        createdBy: {
+          select: {
+            image: true,
+            name: true
+          }
+        }
+      }
     });
 
     return posts;
@@ -142,5 +131,29 @@ export const postRouter = createTRPCRouter({
     });
 
     return updatedPost;
+  }),
+
+  getBySearch: publicProcedure.input(z.object({ search: z.string() })).query(async ({ ctx, input }) => {
+    const posts = await ctx.db.post.findMany({
+      where: { 
+        OR: 
+          [
+            { title: { contains: input.search } }, 
+            { createdBy: { name: { contains: input.search }}}
+          ] 
+      },
+      take: 15,
+      orderBy: { createdAt: "desc" },
+      include: {
+        createdBy: {
+          select: {
+            image: true,
+            name: true
+          }
+        }
+      }
+    });
+
+    return posts;
   })
 });

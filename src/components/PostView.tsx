@@ -10,8 +10,10 @@ import { cacheBustImgURL } from "~/utils/format";
 interface PostViewProps {
     post: {
         id: number,
-        name?: string,
-        img?: string,
+        createdBy: {
+            image: string | null,
+            name: string
+        }
         title: string,
         content: string,
         createdAt: Date,
@@ -36,10 +38,10 @@ const PostView = ({post, onUserPage = false, onPostDeleted}: PostViewProps) => {
     return (
         <Link href={`/post/${post.id}`} key={post.id} className="w-full">
             <div className="bg-white p-4 rounded-md flex flex-col gap-2 px-4 border-b-2 border-gray-200">
-                {post.img && post.name && 
+                {post.createdBy.image && post.createdBy.name && 
                 <div className="flex items-center gap-1">
-                    <Image src={cacheBustImgURL(post.img)} alt={post.name} width={20} height={20} className="rounded-full h-5 object-cover" />
-                    <p className="text-xs">{post.name}</p>
+                    {!onUserPage && <Image src={cacheBustImgURL(post.createdBy.image)} alt={post.createdBy.name} width={20} height={20} className="rounded-full h-5 object-cover" />}
+                    <p className="text-xs">{post.createdBy.name}</p>
                     <p>·</p>
                     <p className="text-xs italic">{post.createdAt.toLocaleDateString()}</p>
                 </div>} 
