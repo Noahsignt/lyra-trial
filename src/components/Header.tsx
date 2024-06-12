@@ -1,6 +1,9 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 
+import { api } from "~/utils/api";
+import { cacheBustImgURL } from "~/utils/format";
+
 import Btn from "./Btn";
 
 import Link from "next/link";
@@ -32,6 +35,8 @@ const StoriesSelectionSVG = () => {
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { data: sessionData } = useSession();
+    const email = sessionData?.user?.email ?? '';
+    const { data: userData, isLoading } = api.user.getUserByEmail.useQuery({ email }, { enabled: !!email });
 
     return (
         <header className="flex justify-between items-center border-b-2 border-gray-100 h-12 px-2">
@@ -41,7 +46,7 @@ const Header = () => {
             {sessionData ?
             <div className="flex items-center gap-4">
                 <WriteButton />
-                <Image src={sessionData.user.image ?? ''} alt={sessionData.user.name ?? ''} width={32} height={32} className="h-8 rounded-full cursor-pointer" onClick={() => setIsMenuOpen(!isMenuOpen)}/>
+                <Image src={cacheBustImgURL(userData?.image ?? '')} alt={userData?.name ?? ''} width={32} height={32} className="h-8 rounded-full cursor-pointer" onClick={() => setIsMenuOpen(!isMenuOpen)}/>
             </div> :
             <div>
                 <Btn onClick={() => signIn()} text="Sign in" lightScheme={true} />

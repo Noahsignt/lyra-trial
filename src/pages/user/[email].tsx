@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 import { api } from "~/utils/api";
+import { cacheBustImgURL } from "~/utils/format";
 
 import Header from "~/components/Header";
 import LoadingSpinner from "~/components/LoadingSpinner";
@@ -70,10 +71,13 @@ const Home : NextPage<PageProps> = (props) => {
     const [img, setImg] = useState<File | undefined>(undefined);
     const [imgUrl, setImgUrl] = useState(userData.image);
     const [hasChanged, setHasChanged] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { mutate: generateURL } = api.profilePicture.generatePresignedURL.useMutation();
     const { mutate: updateImage } = api.user.updateImage.useMutation();
     const { mutate: updateUserInfo } = api.user.updateInfo.useMutation();
+
+    const utils = api.useUtils();
 
     useEffect(() => {
       setHasChanged(!(name === userData.name && bio === userData.bio && img === undefined));
@@ -85,43 +89,64 @@ const Home : NextPage<PageProps> = (props) => {
 
       if (file) {
         setImg(file);
-        setImgUrl(URL.createObjectURL(file));
+        const url = URL.createObjectURL(file)
+        setImgUrl(url);
       }
     }
 
     //handles back-end state for submitting changes to name/bio/image
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-
       //nothing has changed, should never be able to get here
       if(!(hasChanged)){
         return;
       }
 
+      setIsLoading(true);
+      const promises = [];
+
       if(name !== userData.name || bio !== userData.bio){
-        updateUserInfo({name: name, bio: bio})
+        const updateUserPromise = new Promise<void>((resolve, reject) => {
+          updateUserInfo({name: name, bio: bio}, {onSuccess: () => {
+            resolve();
+          }, onError: (error) => {
+            reject(error);
+          }})
+        })
+
+        promises.push(updateUserPromise);
       }
 
       //pass undefined as generateURL relys entirely on user ctx and no parameters
       if(img){
-        generateURL(undefined, {onSuccess: (data: string) => {
+        const s3Promise = new Promise<void>((resolve, reject) => 
+          generateURL(undefined, {onSuccess: (data: string) => { 
+          setIsLoading(true);
           // unbound-method seems to be a bug here
           //eslint-disable-next-line @typescript-eslint/unbound-method
           fetch(data, {method: 'PUT', body: img}).then(res => {
             //update prisma link
-          updateImage({
-            //strip query string
-            image: new URL(res.url).origin + new URL(res.url).pathname
-          })
-        }).catch(error => {
-          console.log(error);
-          return;
-        }).catch
-        }, onError: (error) => {
-          console.log(error);
-          return;
-        }});
+            updateImage({
+              //strip query string
+              image: new URL(res.url).origin + new URL(res.url).pathname
+            }, {onSuccess: () => {
+              utils.user.invalidate().then(() => {
+                resolve();
+              }).catch(reject);
+            }, onError: reject})
+          }).catch(reject);
+        }, onError: reject}));
+
+        promises.push(s3Promise);
       }
+
+      Promise.all(promises).then(() => {
+        setIsLoading(false);
+        onClose();
+      }).catch(error => {
+        console.log(error);
+        setIsLoading(false);
+      })
     }
 
     const SaveBtn = () => {
@@ -151,7 +176,7 @@ const Home : NextPage<PageProps> = (props) => {
         <form onSubmit={(e) => onSubmit(e)} className="flex flex-col px-8 gap-4 h-full">
           <p className="text-sm text-gray-400">Photo</p>
           <div className="flex py-2 gap-4 sm:gap-8">
-            <Image src={`${imgUrl}`} alt={`${userData.name}'s profile picture`} width={72} height={72} className="rounded-full h-16 sm:h-18"/>
+            <Image src={`${cacheBustImgURL(imgUrl)}`} alt={`${userData.name}'s profile picture`} width={72} height={72} className="rounded-full h-16 sm:h-18"/>
             <div className="flex flex-col justify-between">
               <div className="flex gap-4">
                 <label htmlFor="pfp-upload" className="cursor-pointer bg-transparent text-sm font-light text-green-700 hover:text-green-900">
@@ -172,6 +197,7 @@ const Home : NextPage<PageProps> = (props) => {
           <label htmlFor="bio" className="text-sm">Short bio</label>
           <input type="text" name="bio" onChange={(e) => {setBio(e.target.value)}} value={bio} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <div className="flex justify-end items-end flex-grow gap-4">
+            {isLoading && <LoadingSpinner />}
             <button onClick={() => onClose()} className="rounded-full border-2  px-3 py-2 border-green-600 text-green-600 hover:border-green-800 hover:text-green-800 text-sm">
               Cancel
             </button>
@@ -200,7 +226,7 @@ const Home : NextPage<PageProps> = (props) => {
             </h1>
           </div> 
           <div className="flex flex-col items-start py-10 px-8 gap-4">
-            <Image src={`${userData.image}`} alt={`${userData.name}'s profile picture`} width={88} height={88} className="h-20 rounded-full"/>
+            <Image src={cacheBustImgURL(userData.image)} alt={`${userData.name}'s profile picture`} width={88} height={88} className="h-20 rounded-full"/>
             <p className="font-medium">{userData.name}</p>
             <button className="bg-transparent text-green-700 hover:text-green-900" onClick={() => setIsEditOpen(true)}>
               Edit Profile

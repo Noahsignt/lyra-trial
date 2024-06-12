@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from 'next/image';
 
 import { api } from "~/utils/api";
+import { cacheBustImgURL } from "~/utils/format";
 
 import Header from "~/components/Header";
 
@@ -69,7 +70,7 @@ const Home : NextPage<PageProps> = (props) => {
             </h2>
           </div>
           <div>
-            <Image src={postData.img} alt={`${postData.name}'s profile picture`} width={24} height={24} className="rounded-full"/>
+            <Image src={cacheBustImgURL(postData.img)} alt={`${postData.name}'s profile picture`} width={24} height={24} className="rounded-full"/>
             <div>
               <h2>{postData.name}</h2>
               <h3>{postData.createdAt.toLocaleString()}</h3>

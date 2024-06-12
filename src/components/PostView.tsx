@@ -5,6 +5,8 @@ import { useState } from "react";
 
 import { useRouter } from "next/router";
 
+import { cacheBustImgURL } from "~/utils/format";
+
 interface PostViewProps {
     post: {
         id: number,
@@ -36,7 +38,7 @@ const PostView = ({post, onUserPage = false, onPostDeleted}: PostViewProps) => {
             <div className="bg-white p-4 rounded-md flex flex-col gap-2 px-4 border-b-2 border-gray-200">
                 {post.img && post.name && 
                 <div className="flex items-center gap-1">
-                    <Image src={post.img} alt={post.name} width={20} height={20} className="rounded-full" />
+                    <Image src={cacheBustImgURL(post.img)} alt={post.name} width={20} height={20} className="rounded-full" />
                     <p className="text-xs">{post.name}</p>
                     <p>·</p>
                     <p className="text-xs italic">{post.createdAt.toLocaleDateString()}</p>

@@ -5,7 +5,9 @@ import Header from "~/components/Header";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+
 import { api } from "~/utils/api";
+import { cacheBustImgURL } from "~/utils/format";
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import type {
@@ -82,7 +84,7 @@ const Edit : NextPage<PageProps> = () => {
             <div className="flex items-center justify-between gap-x-2">
                 <h1 className="text-2xl font-bold">{user?.name}</h1>
                 <div className="flex items-center gap-x-2">
-                    <Image src={user?.image ?? ""} alt={user?.name ?? ""} width={40} height={40} className="rounded-full" />
+                    <Image src={cacheBustImgURL(user?.image ?? "")} alt={user?.name ?? ""} width={40} height={40} className="rounded-full" />
                     <p>{user?.email}</p>
                 </div>
             </div>
