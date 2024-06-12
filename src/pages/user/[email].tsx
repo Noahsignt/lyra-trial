@@ -164,7 +164,15 @@ const Home : NextPage<PageProps> = (props) => {
       })
     }
 
-    const SaveBtn = () => {
+    const SaveBtn = ({ isBtnLoading } : {isBtnLoading: boolean}) => {
+      if(isBtnLoading) {
+        return (
+          <button className="opacity-50 cursor-not-allowed rounded-full border-2  px-3 py-2 text-white bg-green-600 hover:bg-green-800 text-sm">
+            Saving
+          </button>
+        )
+      }
+
       return hasChanged ? <button type="submit" className="rounded-full border-2  px-3 py-2 text-white bg-green-600 hover:bg-green-800 text-sm">
         Save
       </button> :
@@ -212,11 +220,14 @@ const Home : NextPage<PageProps> = (props) => {
           <label htmlFor="bio" className="text-sm">Short bio</label>
           <input type="text" name="bio" onChange={(e) => {setBio(e.target.value)}} value={bio} className="bg-gray-100 rounded-md h-10 outline-black px-4"/>
           <div className="flex justify-end items-end flex-grow gap-4">
-            {isLoading && <LoadingSpinner />}
-            <button onClick={() => onClose()} className="rounded-full border-2  px-3 py-2 border-green-600 text-green-600 hover:border-green-800 hover:text-green-800 text-sm">
-              Cancel
-            </button>
-            <SaveBtn />
+            {isLoading ? <SaveBtn isBtnLoading={true} /> :
+            <>
+              <button onClick={() => onClose()} className="rounded-full border-2  px-3 py-2 border-green-600 text-green-600 hover:border-green-800 hover:text-green-800 text-sm">
+                Cancel
+              </button>
+              <SaveBtn isBtnLoading={false} />
+            </>
+            }
           </div>
         </form>
       </div>

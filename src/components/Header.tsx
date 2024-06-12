@@ -69,7 +69,7 @@ const Header = () => {
             {sessionData ?
             <div className="flex items-center gap-4">
                 <WriteButton />
-                <Image src={cacheBustImgURL(userData?.image ?? '')} alt={userData?.name ?? ''} width={32} height={32} className="h-8 rounded-full cursor-pointer object-cover" onClick={() => setIsMenuOpen(!isMenuOpen)}/>
+                {userData?.image && <Image src={cacheBustImgURL(userData?.image)} alt={userData?.name ?? ''} width={32} height={32} className="h-8 rounded-full cursor-pointer object-cover" onClick={() => setIsMenuOpen(!isMenuOpen)}/>}
             </div> :
             <div>
                 <Btn onClick={() => signIn()} text="Sign in" lightScheme={true} />
