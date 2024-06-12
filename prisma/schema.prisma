@@ -16,6 +16,7 @@ datasource db {
 
 model Post {
     id        Int      @id @default(autoincrement())
+    published Boolean  @default(true)
     title      String
     content   String
     intro     String

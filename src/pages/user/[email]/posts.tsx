@@ -49,21 +49,26 @@ export const getStaticPaths: GetStaticPaths =  () => {
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const UserPosts: NextPage<PageProps> = ({ email }) => {
+    const router = useRouter();
     const [postTypeFilter, setPostTypeFilter] = useState<"Drafts" | "Published">("Drafts");
     //static generated so need to check loading state
     const { data: userData } = api.user.getUserByEmail.useQuery({ email: email });
-    const { data: sessionData, status: sessionLoading } = useSession();
+    const { data: sessionData } = useSession();
 
     if(!userData){
         return <div>404: User not found</div>;
     }
 
-    const { data: postData, isLoading: postsLoading, refetch: refetchPosts } = api.post.getPostsByUserEmail.useQuery({ email: email });
-
-    const isLoading = postsLoading && sessionLoading === 'loading';
+    const { data: otherPostData, isLoading: otherPostsLoading } = api.post.getPostsByUserEmail.useQuery({ email: email });
+    const { data: yourPostData, isLoading: yourPostsLoading, refetch: refetchYourPosts } = api.post.getAllPostsBySingleUser.useQuery({ email: email });
 
     const isUser = () => {
         return sessionData && sessionData.user.id === userData.id;
+    }
+
+    // if we filter by drafts, this returns all unpublished posts. Vice-versa for when we filter by published.
+    const filterPostsByPublishStatus = (posts: typeof yourPostData) => {
+        return posts ? posts.filter((post) => postTypeFilter === "Drafts" ? !post.published : post.published) : [];
     }
 
     const PostTypePicker = () => {
@@ -75,20 +80,41 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
         )
     }
 
+    const NoPostsMessage = ({message}: {message: string}) => {
+        return (
+            <div className="flex flex-col justify-center items-center w-full gap-12 py-16">
+                You have no {message}.
+                <span><a onClick={() => router.push("/post")} className="underline cursor-pointer">Write</a> a story or <a onClick={() => router.push("/")} className="underline cursor-pointer">read</a> on Lyredium.</span>
+            </div>
+        )
+    }
+
     const YourPosts = () => {
         const router = useRouter();
         const { mutate: deletePost } = api.post.delete.useMutation({
             onSuccess: async () => {
-                await refetchPosts();  
+                await refetchYourPosts();  
             },
             onError: (error) => {
                 console.error("Error deleting post:", error);
+            }
+        });
+        const { mutate: updatePostPublishStatus } = api.post.updatePostPublishStatus.useMutation({
+            onSuccess: async () => {
+                await refetchYourPosts();  
+            },
+            onError: (error) => {
+                console.error("Error updating post:", error);
             }
         });
 
         const handlePostDeleted = async (id: number) => {
             deletePost({ id: id });
         };
+
+        const handlePostPublishStatusChange = async (id: number, status: boolean) => {
+            updatePostPublishStatus({ id: id, published: status });
+        }
 
         return(
             <div className="flex flex-col items-center w-1/2 py-16">
@@ -99,11 +125,15 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
                     </button>
                 </div>
                 <PostTypePicker />
-                {!isLoading ?
+                {!yourPostsLoading ?
                 <div className="flex flex-col justify-center items-center gap-4 w-full">
-                    {postData?.map((post) => (
-                        <PostView key={post.id} post={post} onUserPage={true} onPostDeleted={() => handlePostDeleted(post.id)} />
-                    ))}
+                    {filterPostsByPublishStatus(yourPostData).length > 0 ? (
+                        filterPostsByPublishStatus(yourPostData).map((post) => (
+                            <PostView key={post.id} post={post} onUserPage={true} onPostDeleted={() => handlePostDeleted(post.id)} onPostPublishStatusChange={(status) => handlePostPublishStatusChange(post.id, !status)} />
+                        ))
+                    ) : (
+                        <NoPostsMessage message={postTypeFilter === "Drafts" ? "drafts" : "published stories"} />
+                    )}
                 </div>
                     :
                 <LoadingSpinner />}
@@ -117,9 +147,9 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
                 <div className="flex justify-between w-full border-b-2 border-gray-200 py-2">
                     <h1 className="text-4xl font-semibold">{userData.name}&apos;s Stories</h1>
                 </div>
-                {!isLoading ?
+                {!otherPostsLoading ?
                 <div className="flex flex-col justify-center items-center gap-4 w-full">
-                    {postData?.map((post) => (
+                    {otherPostData?.map((post) => (
                         <PostView key={post.id} post={post}/>
                     ))}
                 </div>  

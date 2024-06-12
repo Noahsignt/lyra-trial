@@ -70,9 +70,9 @@ const Home : NextPage<PageProps> = (props) => {
             </h2>
           </div>
           <div>
-            <Image src={cacheBustImgURL(postData.img)} alt={`${postData.name}'s profile picture`} width={24} height={24} className="rounded-full object-cover h-6"/>
+            <Image src={cacheBustImgURL(postData.createdBy.image)} alt={`${postData.createdBy.name}'s profile picture`} width={24} height={24} className="rounded-full object-cover h-6"/>
             <div>
-              <h2>{postData.name}</h2>
+              <h2>{postData.createdBy.name}</h2>
               <h3>{postData.createdAt.toLocaleString()}</h3>
             </div>
           </div>
