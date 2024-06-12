@@ -176,7 +176,7 @@ const Home : NextPage<PageProps> = (props) => {
         <form onSubmit={(e) => onSubmit(e)} className="flex flex-col px-8 gap-4 h-full">
           <p className="text-sm text-gray-400">Photo</p>
           <div className="flex py-2 gap-4 sm:gap-8">
-            <Image src={`${cacheBustImgURL(imgUrl)}`} alt={`${userData.name}'s profile picture`} width={72} height={72} className="rounded-full h-16 sm:h-18"/>
+            <Image src={`${cacheBustImgURL(imgUrl)}`} alt={`${userData.name}'s profile picture`} width={72} height={72} className="rounded-full h-16 sm:h-18 object-cover"/>
             <div className="flex flex-col justify-between">
               <div className="flex gap-4">
                 <label htmlFor="pfp-upload" className="cursor-pointer bg-transparent text-sm font-light text-green-700 hover:text-green-900">
@@ -226,7 +226,7 @@ const Home : NextPage<PageProps> = (props) => {
             </h1>
           </div> 
           <div className="flex flex-col items-start py-10 px-8 gap-4">
-            <Image src={cacheBustImgURL(userData.image)} alt={`${userData.name}'s profile picture`} width={88} height={88} className="h-20 rounded-full"/>
+            <Image src={cacheBustImgURL(userData.image)} alt={`${userData.name}'s profile picture`} width={88} height={88} className="h-20 rounded-full object-cover"/>
             <p className="font-medium">{userData.name}</p>
             <button className="bg-transparent text-green-700 hover:text-green-900" onClick={() => setIsEditOpen(true)}>
               Edit Profile

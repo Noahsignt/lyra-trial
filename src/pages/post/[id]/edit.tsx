@@ -84,7 +84,7 @@ const Edit : NextPage<PageProps> = () => {
             <div className="flex items-center justify-between gap-x-2">
                 <h1 className="text-2xl font-bold">{user?.name}</h1>
                 <div className="flex items-center gap-x-2">
-                    <Image src={cacheBustImgURL(user?.image ?? "")} alt={user?.name ?? ""} width={40} height={40} className="rounded-full" />
+                    <Image src={cacheBustImgURL(user?.image ?? "")} alt={user?.name ?? ""} width={40} height={40} className="rounded-full object-cover h-10" />
                     <p>{user?.email}</p>
                 </div>
             </div>
