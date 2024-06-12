@@ -112,19 +112,16 @@ const Home : NextPage<PageProps> = (props) => {
           updateImage({
             //strip query string
             image: new URL(res.url).origin + new URL(res.url).pathname
-          }, {onSuccess: () => {
-            //hard reload so image updated everywhere
-            window.location.reload();
-          }})
-          }).catch(error => {
-            return;
-          }).catch
+          })
+        }).catch(error => {
+          console.log(error);
+          return;
+        }).catch
         }, onError: (error) => {
+          console.log(error);
           return;
         }});
       }
-
-      window.location.reload();
     }
 
     const SaveBtn = () => {
