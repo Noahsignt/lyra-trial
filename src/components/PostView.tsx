@@ -20,7 +20,7 @@ interface PostViewProps {
         updatedAt: Date,
         intro: string
     },
-    onUserPage?: boolean,
+    onUserPage?: boolean | undefined,
     onPostDeleted?: () => void
 }
 
@@ -37,20 +37,21 @@ const PostView = ({post, onUserPage = false, onPostDeleted}: PostViewProps) => {
 
     return (
         <Link href={`/post/${post.id}`} key={post.id} className="w-full">
-            <div className="bg-white p-4 rounded-md flex flex-col gap-2 px-4 border-b-2 border-gray-200">
+            <div className="bg-white p-4 rounded-md flex flex-col gap-4 px-4 border-b-2 border-gray-200">
                 {post.createdBy.image && post.createdBy.name && 
-                <div className="flex items-center gap-1">
-                    {!onUserPage && <Image src={cacheBustImgURL(post.createdBy.image)} alt={post.createdBy.name} width={20} height={20} className="rounded-full h-5 object-cover" />}
-                    <p className="text-xs">{post.createdBy.name}</p>
-                    <p>·</p>
-                    <p className="text-xs italic">{post.createdAt.toLocaleDateString()}</p>
+                <div className="flex items-center gap-2">
+                    <Image src={cacheBustImgURL(post.createdBy.image)} alt={post.createdBy.name} width={20} height={20} className="rounded-full h-5 object-cover" />
+                    <div className="flex gap-1 items-center">
+                        <p className="text-xs">{post.createdBy.name}</p>
+                        <p>·</p>
+                        <p className="text-xs italic">{post.createdAt.toLocaleDateString()}</p>
+                    </div>
                 </div>} 
                 <div>
                     <h1 className="text-2xl font-bold">{post.title}</h1>
                     <p className="text-gray-500">{post.intro}</p>
                     {onUserPage && 
-                    <div className="flex justify-between text-gray-500 relative">
-                        <p>Published on {post.createdAt.toLocaleDateString()}</p>
+                    <div className="flex justify-end text-gray-500 relative">
                         <button onClick={(e) => { e.preventDefault(); setIsDropdownOpen(!isDropdownOpen); }} className="text-gray-500">
                             <EditSVG />
                         </button>

@@ -8,6 +8,7 @@ import { cacheBustImgURL } from "~/utils/format";
 
 import Header from "~/components/Header";
 import LoadingSpinner from "~/components/LoadingSpinner";
+import PostView from "~/components/PostView";
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import type {
@@ -51,6 +52,7 @@ const Home : NextPage<PageProps> = (props) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const { data: sessionData, status } = useSession();
   const { data: userData } = api.user.getUserByEmail.useQuery({ email: props.email })
+  const { data: postsData, isLoading: isPostsLoading, refetch: refetchPosts } = api.post.getPostsByUserEmail.useQuery({ email: props.email })
   
   if(!userData) {
     return <div>404</div>
@@ -63,6 +65,19 @@ const Home : NextPage<PageProps> = (props) => {
   const isUsersPage = () => {
     return sessionData && sessionData.user.id === userData.id;
   }
+
+    const { mutate: deletePost } = api.post.delete.useMutation({
+      onSuccess: async () => {
+          await refetchPosts();  
+      },
+      onError: (error) => {
+          console.error("Error deleting post:", error);
+      }
+  });
+
+  const handlePostDeleted = async (id: number) => {
+    deletePost({ id: id });
+  };
 
   //renders the card to edit profile details, overlaid over the page we are currently on. 
   const ProfileEditCard = ({ onClose } : {onClose: () => void}) => {
@@ -224,6 +239,17 @@ const Home : NextPage<PageProps> = (props) => {
             <h1 className="text-4xl font-medium">
               {userData.name}
             </h1>
+            <div className="py-8">
+              {!isPostsLoading ? 
+                <div>
+                  {postsData?.map((post) => {
+                    return <PostView key={post.id} post={post} onUserPage={isUsersPage() ?? false} onPostDeleted={() => handlePostDeleted(post.id)}/>
+                  })}
+                </div> :
+                <div className="flex justify-center items-center h-screen">
+                  <LoadingSpinner />
+                </div>}
+            </div>
           </div> 
           <div className="flex flex-col items-start py-10 px-8 gap-4">
             <Image src={cacheBustImgURL(userData.image)} alt={`${userData.name}'s profile picture`} width={88} height={88} className="h-20 rounded-full object-cover"/>
