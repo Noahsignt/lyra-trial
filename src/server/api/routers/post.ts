@@ -138,8 +138,8 @@ export const postRouter = createTRPCRouter({
       where: { 
         OR: 
           [
-            { title: { contains: input.search } }, 
-            { createdBy: { name: { contains: input.search }}}
+            { title: { contains: input.search, mode: 'insensitive' } }, 
+            { createdBy: { name: { contains: input.search, mode: 'insensitive' }}}
           ] 
       },
       take: 15,
