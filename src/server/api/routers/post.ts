@@ -8,17 +8,6 @@ import {
 
 import { TRPCError } from "@trpc/server";
 
-type filteredPostInfo = {
-  id: number,
-  title: string,
-  intro: string,
-  content: string,
-  createdAt: Date,
-  updatedAt: Date,
-  img: string,
-  name: string
-}
-
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.db.post.findMany({
