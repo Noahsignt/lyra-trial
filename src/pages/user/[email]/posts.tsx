@@ -8,6 +8,8 @@ import Header from "~/components/Header";
 import LoadingSpinner from "~/components/LoadingSpinner";
 import PostView from "~/components/PostView";
 
+import { useState } from "react";
+
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import type {
   GetStaticPaths,
@@ -47,6 +49,7 @@ export const getStaticPaths: GetStaticPaths =  () => {
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const UserPosts: NextPage<PageProps> = ({ email }) => {
+    const [postTypeFilter, setPostTypeFilter] = useState<"Drafts" | "Published">("Drafts");
     //static generated so need to check loading state
     const { data: userData } = api.user.getUserByEmail.useQuery({ email: email });
     const { data: sessionData, status: sessionLoading } = useSession();
@@ -61,6 +64,15 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
 
     const isUser = () => {
         return sessionData && sessionData.user.id === userData.id;
+    }
+
+    const PostTypePicker = () => {
+        return (
+            <div className="flex flex-row justify-start items-start gap-8 w-full pt-10">
+                <button onClick={() => setPostTypeFilter("Drafts")} className={`py-4 ${postTypeFilter === "Drafts" ? "text-black border-b border-solid border-black" : "text-gray-500 hover:text-gray-700"}`}>Drafts</button>
+                <button onClick={() => setPostTypeFilter("Published")} className={`py-4 ${postTypeFilter === "Published" ? "text-black border-b border-solid border-black" : "text-gray-500 hover:text-gray-700"}`}>Published</button>
+            </div>
+        )
     }
 
     const YourPosts = () => {
@@ -80,12 +92,13 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
 
         return(
             <div className="flex flex-col items-center w-1/2 py-16">
-                <div className="flex justify-between w-full border-b-2 border-gray-200 py-2">
-                    <h1 className="text-4xl">Your Stories</h1>
+                <div className="flex justify-between w-full py-2">
+                    <h1 className="text-4xl font-semibold">Your Stories</h1>
                     <button onClick={() => router.push("/post")} className="bg-green-700 hover:bg-green-900 text-white py-2 px-4 rounded-full">
                         Write a story
                     </button>
                 </div>
+                <PostTypePicker />
                 {!isLoading ?
                 <div className="flex flex-col justify-center items-center gap-4 w-full">
                     {postData?.map((post) => (
@@ -102,7 +115,7 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
         return(
             <div className="flex flex-col items-center w-1/2 py-16">
                 <div className="flex justify-between w-full border-b-2 border-gray-200 py-2">
-                    <h1 className="text-4xl">{userData.name}&apos;s Stories</h1>
+                    <h1 className="text-4xl font-semibold">{userData.name}&apos;s Stories</h1>
                 </div>
                 {!isLoading ?
                 <div className="flex flex-col justify-center items-center gap-4 w-full">
