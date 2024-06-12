@@ -49,7 +49,7 @@ type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const Home : NextPage<PageProps> = (props) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const { data: sessionData } = useSession();
+  const { data: sessionData, status } = useSession();
   const { data: userData } = api.user.getUserByEmail.useQuery({ email: props.email })
   
   if(!userData) {
@@ -57,7 +57,7 @@ const Home : NextPage<PageProps> = (props) => {
   }
 
   const isLoading = () => {
-    return !sessionData;
+    return status === 'loading';
   }
 
   const isUsersPage = () => {
@@ -228,12 +228,14 @@ const Home : NextPage<PageProps> = (props) => {
           <div className="flex flex-col items-start py-10 px-8 gap-4">
             <Image src={cacheBustImgURL(userData.image)} alt={`${userData.name}'s profile picture`} width={88} height={88} className="h-20 rounded-full object-cover"/>
             <p className="font-medium">{userData.name}</p>
-            <button className="bg-transparent text-green-700 hover:text-green-900" onClick={() => setIsEditOpen(true)}>
+            {isUsersPage() && <button className="bg-transparent text-green-700 hover:text-green-900" onClick={() => setIsEditOpen(true)}>
               Edit Profile
-            </button>
+            </button>}
           </div>
         </div> :
-        <LoadingSpinner />
+        <div className="flex justify-center items-center h-screen">
+          <LoadingSpinner />
+        </div>
         }
       </main>
       {isEditOpen && <ProfileEditCard onClose={() => setIsEditOpen(false)}/>}

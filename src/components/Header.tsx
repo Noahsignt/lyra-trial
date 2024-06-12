@@ -49,10 +49,10 @@ const Header = () => {
 
     const router = useRouter();
 
-    const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleSearchKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             if (search) {
-                router.push(`/search?q=${search}`);
+                await router.push(`/search?q=${search}`);
             }
         }
     }
