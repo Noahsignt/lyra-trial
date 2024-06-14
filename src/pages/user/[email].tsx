@@ -279,8 +279,12 @@ const Home : NextPage<PageProps> = (props) => {
               <p className="font-medium">{userData.name}</p>
               <p className="text-black/70 text-sm">{userData.bio}</p>
             </div>
-            {isUsersPage() && <button className="bg-transparent text-green-700 hover:text-green-900" onClick={() => setIsEditOpen(true)}>
+            {isUsersPage() ?
+            <button className="bg-transparent text-green-700 hover:text-green-900" onClick={() => setIsEditOpen(true)}>
               Edit Profile
+            </button> :
+            <button className="opacity-50 cursor-not-allowed bg-green-600 text-white px-4 py-2 rounded-full text-sm">
+              Follow
             </button>}
           </div>
         </div> :

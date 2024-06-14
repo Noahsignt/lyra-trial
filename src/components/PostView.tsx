@@ -5,9 +5,9 @@ import { useState } from "react";
 
 import { useRouter } from "next/router";
 
-import { PostVisibleSVG, PostNotVisibleSVG, EditSVG } from "./Icons";
+import { PostVisibleSVG, PostNotVisibleSVG, EditSVG, SaveSVG} from "./Icons";
 
-import { cacheBustImgURL } from "~/utils/format";
+import { cacheBustImgURL, getReadingTime, getReadableDate } from "~/utils/format";
 
 interface PostViewProps {
     post: {
@@ -39,16 +39,16 @@ const PostView = ({post, onUserPage = false, onPostDeleted, onPostPublishStatusC
                 {post.createdBy.image && post.createdBy.name && 
                 <div className="flex items-center gap-2">
                     <Image src={cacheBustImgURL(post.createdBy.image)} alt={post.createdBy.name} width={20} height={20} className="rounded-full h-5 object-cover" />
-                    <div className="flex gap-1 items-center">
-                        <p className="text-xs">{post.createdBy.name}</p>
+                    <div className="flex gap-1 items-center text-sm">
+                        <p>{post.createdBy.name}</p>
                         <p>·</p>
-                        <p className="text-xs italic">{post.createdAt.toLocaleDateString()}</p>
+                        <p className="text-black/70">{getReadableDate(post.createdAt)}</p>
                     </div>
                 </div>} 
                 <div>
                     <h1 className="text-2xl font-bold">{post.title}</h1>
                     <p className="text-gray-500">{post.intro}</p>
-                    {onUserPage && 
+                    {onUserPage ?
                     <div className="flex justify-between items-center text-gray-500 relative pt-2">
                         {post.published ? 
                         <div onClick={(e) => {e.preventDefault(); onPostPublishStatusChange && onPostPublishStatusChange(post.published);}}>
@@ -66,6 +66,13 @@ const PostView = ({post, onUserPage = false, onPostDeleted, onPostPublishStatusC
                                 <button onClick={(e) => {e.preventDefault(); onPostDeleted ? onPostDeleted() : null; }} className="text-red-500 hover:text-red-700 text-sm">Delete story</button>
                             </div>
                         )}
+                    </div> :
+                    <div className="flex justify-between text-gray-600 pt-8 text-sm">
+                        <p>{getReadingTime(post.content)} min read</p>
+                        <div className="flex gap-2 cursor-not-allowed">
+                            <SaveSVG />
+                            <EditSVG />
+                        </div>
                     </div>}
                 </div>
             </div>
