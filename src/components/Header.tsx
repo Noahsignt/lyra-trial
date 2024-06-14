@@ -60,7 +60,7 @@ const Header = () => {
     return (
         <header className="flex justify-between items-center border-b-2 border-gray-100 h-12 px-2">
             <div className="flex items-center gap-2">
-                <Link className="text-4xl px-4 font-serif font-black tracking-tight" href="/">
+                <Link className={`${!sessionData ? "text-4xl" : "text-2xl"} px-4 font-serif font-black tracking-tight`} href="/">
                     Lyredium
                 </Link>
                 {sessionData && 
