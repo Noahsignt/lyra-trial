@@ -2,7 +2,9 @@ import Head from "next/head";
 import Image from 'next/image';
 
 import { api } from "~/utils/api";
-import { cacheBustImgURL } from "~/utils/format";
+import { cacheBustImgURL, getReadingTime, getReadableDate } from "~/utils/format";
+
+import { EditSVG, SaveSVG, ClapSVG, CommentSVG, PlaySVG, UploadSVG } from "~/components/Icons";
 
 import Header from "~/components/Header";
 
@@ -51,6 +53,29 @@ const Home : NextPage<PageProps> = (props) => {
     return <div>404</div>
   }
 
+  const ReactionBar = () => {
+    return (
+      <div className="flex flex-row items-center justify-between text-gray-600">
+        <div className="flex gap-4">
+          <div className="flex flex-row gap-1 hover:text-black">
+            <ClapSVG />
+            0
+          </div>
+          <div className="flex flex-row gap-1 hover:text-black">
+            <CommentSVG />
+            0
+          </div>
+        </div>
+        <div className="flex gap-4">
+          <SaveSVG />
+          <PlaySVG />
+          <UploadSVG />
+          <EditSVG />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <>
       <Head>
@@ -60,7 +85,7 @@ const Home : NextPage<PageProps> = (props) => {
       </Head>
       <Header />
       <main className="flex min-h-screen flex-col justify-start items-center py-8 px-16 gap-4">
-        <div className="bg-white p-4 rounded-md h-1/2 w-3/4 flex gap-8 flex flex-col">
+        <div className="bg-white p-4 rounded-md h-1/2 w-full lg:w-1/2 flex gap-8 flex flex-col">
           <div className="flex flex-col">
             <h1 className="text-4xl font-bold">
               {postData.title}
@@ -69,13 +94,20 @@ const Home : NextPage<PageProps> = (props) => {
               {postData.intro}
             </h2>
           </div>
-          <div>
-            <Image src={cacheBustImgURL(postData.createdBy.image)} alt={`${postData.createdBy.name}'s profile picture`} width={24} height={24} className="rounded-full object-cover h-6"/>
-            <div>
+          <div className="flex flex-row items-center gap-2">
+            <Image src={cacheBustImgURL(postData.createdBy.image)} alt={`${postData.createdBy.name}'s profile picture`} width={48} height={48} className="rounded-full object-cover h-12"/>
+            <div className="flex flex-col items-start">
               <h2>{postData.createdBy.name}</h2>
-              <h3>{postData.createdAt.toLocaleString()}</h3>
+              <div className="flex flex-row gap-2 text-sm text-black/70">
+                <h4 className="">Published in <span className="text-black">{postData.createdBy.name}</span></h4>
+                <p>·</p>
+                <h4 className="">{getReadingTime(postData.content)} min read</h4>
+                <p>·</p>
+                <h4 className="">{getReadableDate(postData.createdAt)}</h4>
+              </div>
             </div>
           </div>
+          <ReactionBar />
           <div>
             {postData.content}
           </div>

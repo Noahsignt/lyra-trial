@@ -14,4 +14,15 @@ const cacheBustImgURL = (url: string | null) => {
   return url;
 }
 
-export { cacheBustImgURL };
+//arbitrarily calculates how long an article is going to take in minutes
+const getReadingTime = (body: string) => {
+  const words = body.split(' ');
+  const readingTime = Math.ceil(words.length / 200);
+  return readingTime;
+}
+
+const getReadableDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+export { cacheBustImgURL, getReadingTime, getReadableDate };

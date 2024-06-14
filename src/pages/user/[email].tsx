@@ -6,6 +6,8 @@ import { useState, useEffect } from 'react';
 import { api } from "~/utils/api";
 import { cacheBustImgURL } from "~/utils/format";
 
+import { CloseSVG } from "~/components/Icons";
+
 import Header from "~/components/Header";
 import LoadingSpinner from "~/components/LoadingSpinner";
 import PostView from "~/components/PostView";
@@ -75,7 +77,7 @@ const Home : NextPage<PageProps> = (props) => {
       }
   });
 
-  const handlePostDeleted = async (id: number) => {
+  const handlePostDeleted = async (id: string) => {
     deletePost({ id: id });
   };
 
@@ -179,10 +181,6 @@ const Home : NextPage<PageProps> = (props) => {
       <button className="opacity-50 cursor-not-allowed rounded-full border-2  px-3 py-2 text-white bg-green-600 hover:bg-green-800 text-sm">
         Save
       </button>
-    }
-
-    const CloseSVG = () => {
-      return <svg width="24" height="24" viewBox="0 0 24 24" fill="#d1d5db" className="text-gray-400"><path d="M5 5l7 7m7 7l-7-7m0 0l7-7m-7 7l-7 7" stroke="currentColor" stroke-linecap="round"></path></svg>
     }
 
     return (
