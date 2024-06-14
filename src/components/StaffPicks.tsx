@@ -14,7 +14,7 @@ const StaffPicks = () => {
     return (
         <>
             {isLoading ? <LoadingSpinner /> : (
-                <div className="flex flex-col p-4 gap-3">
+                <div className="flex flex-col gap-3">
                     <h1 className="py-2 font-medium">Staff Picks</h1>
                     {posts?.slice(0, 3).map((post) => (
                         <div key={post.id}>

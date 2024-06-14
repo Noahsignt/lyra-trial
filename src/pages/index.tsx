@@ -8,6 +8,7 @@ import Btn from "~/components/Btn";
 import LoadingSpinner from "~/components/LoadingSpinner";
 import PostView from "~/components/PostView";
 import StaffPicks from "~/components/StaffPicks";
+import RecommendedTopics from "~/components/RecommendedTopics";
 
 export default function Home() {
   const { data: sessionData, status: userStatus } = useSession();
@@ -36,7 +37,10 @@ export default function Home() {
                   <PostView post={post} key={post.id} />
                 ))}
               </div>
-              <StaffPicks />
+              <div className="flex flex-col gap-4 p-4">
+                <StaffPicks />
+                <RecommendedTopics />
+              </div>
               </>
               : 
               <div className="col-span-4">
