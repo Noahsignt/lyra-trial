@@ -17,8 +17,8 @@ const RecommendedTopics = () => {
                 Recommended Topics
             </h1>
             <div className="flex flex-row flex-wrap gap-3">
-                {hardCodedTopics.map((topic) => (
-                    <div className="cursor-not-allowed text-sm bg-black/5 py-2 px-4 rounded-full">{topic}</div>
+                {hardCodedTopics.map((topic, idx) => (
+                    <div key={idx} className="cursor-not-allowed text-sm bg-black/5 py-2 px-4 rounded-full">{topic}</div>
                 ))}
             </div>
         </div>
