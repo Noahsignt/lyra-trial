@@ -53,7 +53,7 @@ export const postRouter = createTRPCRouter({
     return posts;
   }),
 
-  getPostById: publicProcedure.input(z.object({ id: z.number() })).query(async ({ ctx, input }) => {
+  getPostById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
     const post = await ctx.db.post.findUnique({
       where: { id: input.id, published: true },
       include: {
@@ -90,7 +90,7 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
-  delete: protectedProcedure.input(z.object({ id: z.number() })).mutation(async ({ ctx, input }) => {
+  delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
     const post = await ctx.db.post.findUnique({
       where: { id: input.id },
     });
@@ -107,7 +107,7 @@ export const postRouter = createTRPCRouter({
     });
   }),
 
-  updateById: protectedProcedure.input(z.object({ id: z.number(), title: z.string().min(1), content: z.string().min(1), intro: z.string().min(1) })).mutation(async ({ ctx, input }) => {
+  updateById: protectedProcedure.input(z.object({ id: z.string(), title: z.string().min(1), content: z.string().min(1), intro: z.string().min(1) })).mutation(async ({ ctx, input }) => {
     const post = await ctx.db.post.findUnique({
       where: { id: input.id },
     });
@@ -176,7 +176,7 @@ export const postRouter = createTRPCRouter({
     return posts;
   }),
 
-  updatePostPublishStatus: protectedProcedure.input(z.object({ id: z.number(), published: z.boolean() })).mutation(async ({ ctx, input }) => {
+  updatePostPublishStatus: protectedProcedure.input(z.object({ id: z.string(), published: z.boolean() })).mutation(async ({ ctx, input }) => {
     return ctx.db.post.update({
       where: { id: input.id },
       data: { published: input.published }

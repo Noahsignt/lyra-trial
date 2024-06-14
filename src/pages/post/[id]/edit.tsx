@@ -26,7 +26,7 @@ export async function getStaticProps( context: GetStaticPropsContext<{ id: strin
     ctx: {db, session: null},
     transformer: superjson, 
   });
-  const id = Number(context.params!.id);
+  const id = String(context.params!.id);
   await helpers.post.getPostById.prefetch({ id });
 
   return {
@@ -52,7 +52,7 @@ const Edit : NextPage<PageProps> = () => {
     const { data: sessionData } = useSession();
 
     const { data: postData } = api.post.getPostById.useQuery({
-        id: Number(router.query.id)
+        id: router.query.id as string
     });
 
     const [title, setTitle] = useState("");
@@ -100,7 +100,7 @@ const Edit : NextPage<PageProps> = () => {
                     <Byline />
                     <input type="text" placeholder="Title" name="Title" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full h-10 p-2 rounded-md border-2 border-gray-3000" />
                     <input type="text" placeholder="Intro" name="Intro" value={intro} onChange={(e) => setIntro(e.target.value)} className="w-full h-10 p-2 rounded-md border-2 border-gray-3000" />
-                    <textarea placeholder="Content" name="Content" value={content} onChange={(e) => setContent(e.target.value)} className="w-full h-96 p-2 rounded-md border-2 border-gray-300 resize-none overflow-hidden" />
+                    <textarea placeholder="Content" name="Content" value={content} onChange={(e) => setContent(e.target.value)} className="w-full h-96 p-2 rounded-md border-2 border-gray-300 resize-none  overflow-y-scroll" />
                     <button onClick={onClick} className="px-4 py-2 bg-black text-white rounded-md w-48">
                         Save Changes
                     </button>

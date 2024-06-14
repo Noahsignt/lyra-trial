@@ -9,7 +9,7 @@ import { cacheBustImgURL } from "~/utils/format";
 
 interface PostViewProps {
     post: {
-        id: number,
+        id: string,
         createdBy: {
             image: string | null,
             name: string

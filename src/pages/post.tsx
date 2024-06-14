@@ -61,7 +61,7 @@ export default function Post() {
                     <Byline />
                     <input type="text" placeholder="Title" name="Title" onChange={(e) => setTitle(e.target.value)} className="w-full h-10 p-2 rounded-md border-2 border-gray-3000" />
                     <input type="text" placeholder="Intro" name="Intro" onChange={(e) => setIntro(e.target.value)} className="w-full h-10 p-2 rounded-md border-2 border-gray-3000" />
-                    <textarea placeholder="Content" name="Content" onChange={(e) => setContent(e.target.value)} className="w-full h-96 p-2 rounded-md border-2 border-gray-300 resize-none overflow-hidden" />
+                    <textarea placeholder="Content" name="Content" onChange={(e) => setContent(e.target.value)} className="w-full h-96 p-2 rounded-md border-2 border-gray-300 resize-none overflow-y-scroll" />
                     <button onClick={onClick} className="px-4 py-2 bg-black text-white rounded-md w-24">
                         Post
                     </button>

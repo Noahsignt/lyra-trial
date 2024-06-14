@@ -23,7 +23,7 @@ export async function getStaticProps( context: GetStaticPropsContext<{ id: strin
     ctx: {db, session: null},
     transformer: superjson, 
   });
-  const id = Number(context.params!.id);
+  const id = String(context.params!.id);
   await helpers.post.getPostById.prefetch({ id });
 
   return {

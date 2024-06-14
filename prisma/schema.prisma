@@ -15,7 +15,7 @@ datasource db {
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
+    id        String     @id @default(cuid())
     published Boolean  @default(true)
     title      String
     content   String
@@ -62,7 +62,7 @@ model User {
     name          String
     email         String   @unique
     emailVerified DateTime?
-    image         String?
+    image         String   @default("https://lyra-profile-pictures.s3.ap-southeast-2.amazonaws.com/profile-default.svg")
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
