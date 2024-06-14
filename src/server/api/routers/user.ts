@@ -57,5 +57,14 @@ export const userRouter = createTRPCRouter({
       })
 
       return user;
+    }),
+    
+    getThreeUsers: publicProcedure
+    .query(async ({ctx}) => {
+      const users = await ctx.db.user.findMany({
+        take: 3
+      })
+
+      return users;
     })
 });

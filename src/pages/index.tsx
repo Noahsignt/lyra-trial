@@ -9,6 +9,7 @@ import LoadingSpinner from "~/components/LoadingSpinner";
 import PostView from "~/components/PostView";
 import StaffPicks from "~/components/StaffPicks";
 import RecommendedTopics from "~/components/RecommendedTopics";
+import WhoToFollow from "~/components/WhoToFollow";
 
 export default function Home() {
   const { data: sessionData, status: userStatus } = useSession();
@@ -40,6 +41,7 @@ export default function Home() {
               <div className="flex flex-col gap-4 p-4">
                 <StaffPicks />
                 <RecommendedTopics />
+                <WhoToFollow />
               </div>
               </>
               : 
