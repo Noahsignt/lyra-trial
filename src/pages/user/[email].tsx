@@ -77,9 +77,22 @@ const Home : NextPage<PageProps> = (props) => {
       }
   });
 
+  const { mutate: updatePostPublishStatus } = api.post.updatePostPublishStatus.useMutation({
+    onSuccess: async () => {
+        await refetchPosts();  
+    },
+    onError: (error) => {
+        console.error("Error updating post:", error);
+      }
+  });
+
   const handlePostDeleted = async (id: string) => {
     deletePost({ id: id });
   };
+
+  const handlePostPublishStatusChange = async (id: string, status: boolean) => {
+    updatePostPublishStatus({ id: id, published: status });
+  }
 
   //renders the card to edit profile details, overlaid over the page we are currently on. 
   const ProfileEditCard = ({ onClose } : {onClose: () => void}) => {
@@ -252,7 +265,7 @@ const Home : NextPage<PageProps> = (props) => {
               {!isPostsLoading ? 
                 <div>
                   {postsData?.map((post) => {
-                    return <PostView key={post.id} post={post} onUserPage={isUsersPage() ?? false} onPostDeleted={() => handlePostDeleted(post.id)}/>
+                    return <PostView key={post.id} post={post} onUserPage={isUsersPage() ?? false} onPostDeleted={() => handlePostDeleted(post.id)} onPostPublishStatusChange={(status) => handlePostPublishStatusChange(post.id, !status)}/>
                   })}
                 </div> :
                 <div className="flex justify-center items-center h-screen">
@@ -261,7 +274,7 @@ const Home : NextPage<PageProps> = (props) => {
             </div>
           </div> 
           <div className="flex flex-col items-start py-10 px-8 gap-4">
-            <Image src={cacheBustImgURL(userData.image)} alt={`${userData.name}'s profile picture`} width={88} height={88} className="h-20 rounded-full object-cover"/>
+            <Image src={cacheBustImgURL(userData.image)} alt={`${userData.name}'s profile picture`} width={88} height={88} className="md:h-[88px] rounded-full object-cover"/>
             <p className="font-medium">{userData.name}</p>
             {isUsersPage() && <button className="bg-transparent text-green-700 hover:text-green-900" onClick={() => setIsEditOpen(true)}>
               Edit Profile

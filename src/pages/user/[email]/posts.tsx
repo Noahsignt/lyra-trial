@@ -108,11 +108,11 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
             }
         });
 
-        const handlePostDeleted = async (id: number) => {
+        const handlePostDeleted = async (id: string) => {
             deletePost({ id: id });
         };
 
-        const handlePostPublishStatusChange = async (id: number, status: boolean) => {
+        const handlePostPublishStatusChange = async (id: string, status: boolean) => {
             updatePostPublishStatus({ id: id, published: status });
         }
 
