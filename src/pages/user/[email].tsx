@@ -275,7 +275,10 @@ const Home : NextPage<PageProps> = (props) => {
           </div> 
           <div className="flex flex-col items-start py-10 px-8 gap-4">
             <Image src={cacheBustImgURL(userData.image)} alt={`${userData.name}'s profile picture`} width={88} height={88} className="md:h-[88px] rounded-full object-cover"/>
-            <p className="font-medium">{userData.name}</p>
+            <div className="flex flex-col">
+              <p className="font-medium">{userData.name}</p>
+              <p className="text-black/70 text-sm">{userData.bio}</p>
+            </div>
             {isUsersPage() && <button className="bg-transparent text-green-700 hover:text-green-900" onClick={() => setIsEditOpen(true)}>
               Edit Profile
             </button>}
