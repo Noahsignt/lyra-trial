@@ -7,6 +7,7 @@ import { cacheBustImgURL, getReadingTime, getReadableDate } from "~/utils/format
 import { EditSVG, SaveSVG, ClapSVG, CommentSVG, PlaySVG, UploadSVG } from "~/components/Icons";
 
 import Header from "~/components/Header";
+import { useRouter } from "next/navigation";
 
 import { createServerSideHelpers } from '@trpc/react-query/server';
 import type {
@@ -47,6 +48,7 @@ export const getStaticPaths: GetStaticPaths =  () => {
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const Home : NextPage<PageProps> = (props) => {
+  const router = useRouter();
   const { data: postData } = api.post.getPostById.useQuery({ id: props.id })
   
   if(!postData) {
@@ -97,7 +99,7 @@ const Home : NextPage<PageProps> = (props) => {
           <div className="flex flex-row items-center gap-2">
             <Image src={cacheBustImgURL(postData.createdBy.image)} alt={`${postData.createdBy.name}'s profile picture`} width={48} height={48} className="rounded-full object-cover h-12"/>
             <div className="flex flex-col items-start">
-              <h2>{postData.createdBy.name}</h2>
+              <h2 className="cursor-pointer" onClick={async () => router.push(`/user/${postData.createdBy.email}`)}>{postData.createdBy.name}</h2>
               <div className="flex flex-row gap-2 text-sm text-black/70">
                 <h4 className="">Published in <span className="text-black">{postData.createdBy.name}</span></h4>
                 <p>·</p>
