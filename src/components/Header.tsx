@@ -60,19 +60,23 @@ const Header = () => {
     return (
         <header className="flex justify-between items-center border-b-2 border-gray-100 h-12 px-2">
             <div className="flex items-center gap-2">
-                <Link className="text-2xl font-bold px-4" href="/">
+                <Link className="text-4xl px-4 font-serif font-black tracking-tight" href="/">
                     Lyredium
                 </Link>
-                <SearchBarSVG />
-                <input type="text" placeholder="Search" className="bg-transparent p-2 rounded-md w-48 text-sm outline-none text-gray-600" onChange={(e) => setSearch(e.target.value)} onKeyDown={(e) => handleSearchKeyDown(e)}/>
+                {sessionData && 
+                <>
+                    <SearchBarSVG />
+                    <input type="text" placeholder="Search" className="bg-transparent p-2 rounded-md w-48 text-sm outline-none text-gray-600" onChange={(e) => setSearch(e.target.value)} onKeyDown={(e) => handleSearchKeyDown(e)}/>
+                </>}
             </div>
             {sessionData ?
             <div className="flex items-center gap-4">
                 <WriteButton />
                 {userData?.image && <Image src={cacheBustImgURL(userData?.image)} alt={userData?.name ?? ''} width={32} height={32} className="h-8 rounded-full cursor-pointer object-cover" onClick={() => setIsMenuOpen(!isMenuOpen)}/>}
             </div> :
-            <div>
+            <div className="flex">
                 <Btn onClick={() => signIn()} text="Sign in" lightScheme={true} />
+                <Btn onClick={() => signIn()} text="Get started" lightScheme={false} />
             </div>}
             {isMenuOpen && sessionData &&
             <div className="absolute top-10 right-0 bg-white p-4 rounded-md border-2 border-gray-100 w-48 shadow">
