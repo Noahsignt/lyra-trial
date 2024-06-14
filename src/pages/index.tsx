@@ -7,6 +7,7 @@ import Header from "~/components/Header";
 import Btn from "~/components/Btn";
 import LoadingSpinner from "~/components/LoadingSpinner";
 import PostView from "~/components/PostView";
+import StaffPicks from "~/components/StaffPicks";
 
 export default function Home() {
   const { data: sessionData, status: userStatus } = useSession();
@@ -26,13 +27,22 @@ export default function Home() {
       <div className={`${!isAuth && "border-solid border-b-[1px] border-black py-4 px-8"}`}>
         <Header />
       </div>
-      <main className="flex min-h-screen flex-col justify-start items-center py-8 gap-4">
-        <div className="flex flex-col justify-start items-center w-full sm:w-1/2">
-              {isLoaded ? isAuth ? posts?.map((post) => (
-                <PostView post={post} key={post.id} />
-              )) : 
-              <IntroBloc />
-              : <div className="flex items-center justify-center h-screen">
+      <main className="flex min-h-screen flex-col justify-start items-center gap-4">
+        <div className="grid grid-cols-4 h-screen w-full sm:w-3/4">
+              {isLoaded ? isAuth ?
+              <>
+              <div className="col-start-1 col-end-4 border-r-2 border-gray-100 pr-8 pt-8 flex flex-col justify-start items-center">
+                {posts?.map((post) => (
+                  <PostView post={post} key={post.id} />
+                ))}
+              </div>
+              <StaffPicks />
+              </>
+              : 
+              <div className="col-span-4">
+                <IntroBloc />
+              </div>
+              : <div className="col-span-4 flex items-center justify-center h-screen">
                   <LoadingSpinner />
                 </div>}
         </div>

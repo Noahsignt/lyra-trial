@@ -25,4 +25,8 @@ const getReadableDate = (date: Date) => {
   return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
-export { cacheBustImgURL, getReadingTime, getReadableDate };
+const getDefaultImgURL = () => {
+  return "https://lyra-bucket.s3.amazonaws.com/default.png"
+}
+
+export { cacheBustImgURL, getReadingTime, getReadableDate, getDefaultImgURL };
