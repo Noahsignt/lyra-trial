@@ -79,7 +79,7 @@ export default function Post() {
             </main>
             {publishStoryMenu && 
             <div className="absolute flex items-center justify-center w-screen h-screen top-0 left-0 bg-white">
-                <div className="sm:w-1/2 sm:h-1/2 grid grid-cols-2 gap-16">
+                <div className="sm:w-3/4 sm:h-1/2 lg:w-1/2 px-2 flex flex-col md:grid md:grid-cols-2 gap-4 md:gap-12">
                     <div className="flex flex-col gap-2">
                         <h2 className="font-semibold">
                             Story Preview
@@ -111,7 +111,7 @@ export default function Post() {
                         <button className={`bg-green-700 hover:bg-green-900 text-white rounded-full w-[110px] py-2 text-sm ${!intro && "bg-green-700/30 hover:bg-green-700/30 cursor-not-allowed"}`} onClick={onClick}>Publish now</button>
                     </div>
                 </div>
-                <div className="absolute top-48 left-3/4 cursor-pointer" onClick={() => setPublishStoryMenu(false)}>
+                <div className="absolute top-0 right-0 md:top-48 md:right-32 lg:right-64 cursor-pointer" onClick={() => setPublishStoryMenu(false)}>
                     <CloseSVG />
                 </div>
             </div>}
