@@ -1,6 +1,6 @@
 import { postRouter } from "~/server/api/routers/post";
 import { userRouter } from "~/server/api/routers/user";
-import { profilePictureRouter } from "~/server/api/routers/profile_picture";
+import { awsRouter } from "~/server/api/routers/aws";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -11,7 +11,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 export const appRouter = createTRPCRouter({
   post: postRouter,
   user: userRouter,
-  profilePicture: profilePictureRouter,
+  aws: awsRouter,
 });
 
 // export type definition of API

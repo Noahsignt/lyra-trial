@@ -21,7 +21,10 @@ export default function Post() {
 
     const { data: sessionData } = useSession();
     const user = sessionData?.user;
-    const { mutate } = api.post.create.useMutation();
+
+    const createPost = api.post.create.useMutation();
+    const getBucket = api.aws.generateCoverPresignedURL.useMutation();
+    const updateImageURL = api.post.updatePostImg.useMutation();
 
     const handlePostClick = () => {
         if(canPost()) {
@@ -41,27 +44,31 @@ export default function Post() {
         }
     }
 
-    const onClick = () => {
-        if(!(intro && title && content)){
+    const onClick = async () => {
+        if(!(intro && title && content && coverImg)){
             return;
         }
 
-        mutate({
-            title: title,
-            content: content,
-            intro: intro
-        }, {
-            onSuccess: () => {
-                router.push('/').then(() => {
-                    return;
-                }).catch((error) => {
-                    console.log(error);
-                });
-            },
-            onError: (error) => {
-                console.log(error);
-            }
-        })
+        try {
+            // grab id earlier to do less crud
+            const post = await createPost.mutateAsync({
+                title: title,
+                content: content,
+                intro: intro
+            })
+            const url = await getBucket.mutateAsync({
+                id: post.id
+            })
+            const res = await fetch(url, {method: 'PUT', body: coverImg});
+            await updateImageURL.mutateAsync({
+                id: post.id,
+                url: new URL(res.url).origin + new URL(res.url).pathname
+            })
+
+            await router.push('/')
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (

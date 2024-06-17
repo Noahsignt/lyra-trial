@@ -183,5 +183,12 @@ export const postRouter = createTRPCRouter({
       where: { id: input.id },
       data: { published: input.published }
     });
+  }),
+
+  updatePostImg: protectedProcedure.input(z.object({ id: z.string(), url: z.string() })).mutation(async ({ctx, input}) => {
+    return ctx.db.post.update({
+      where: {id: input.id, createdBy: {id: ctx.session.user.id}},
+      data: {coverImg: input.url}
+    })
   })
 });

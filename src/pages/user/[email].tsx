@@ -103,7 +103,7 @@ const Home : NextPage<PageProps> = (props) => {
     const [hasChanged, setHasChanged] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const { mutate: generateURL } = api.profilePicture.generatePresignedURL.useMutation();
+    const { mutate: generateURL } = api.aws.generatePFPPresignedURL.useMutation();
     const { mutate: updateImage } = api.user.updateImage.useMutation();
     const { mutate: updateUserInfo } = api.user.updateInfo.useMutation();
 
