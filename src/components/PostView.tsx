@@ -35,7 +35,7 @@ const PostView = ({post, onUserPage = false, onPostDeleted, onPostPublishStatusC
     const [ isDropdownOpen, setIsDropdownOpen ]= useState(false);
 
     return (
-        <Link href={`/post/${post.id}`} key={post.id} className={`grid grid-col-10 border-b-2 border-gray-200 ${!onUserPage ? "w-3/4" : "w-full"}`}>
+        <Link href={`/post/${post.id}`} key={post.id} className={`grid grid-col-10 border-b-2 border-gray-200 ${!onUserPage ? "w-full sm:w-3/4" : "w-full"}`}>
             <div className="bg-white p-4 rounded-md flex flex-col gap-4 px-4 col-span-7">
                 {post.createdBy.image && post.createdBy.name && 
                 <div className="flex items-center gap-2">
@@ -79,7 +79,7 @@ const PostView = ({post, onUserPage = false, onPostDeleted, onPostPublishStatusC
             </div>
             {!onUserPage && 
             <div className="object-contain col-start-8 col-span-2 flex items-center justify-end">
-                <Image src={post.coverImg} alt={"Post Preview Image"} width={64} height={64} className="w-3/4"/>
+                <Image src={post.coverImg} alt={"Post Preview Image"} width={64} height={64} className="w-full sm:w-3/4"/>
             </div>}
         </Link>
     )
