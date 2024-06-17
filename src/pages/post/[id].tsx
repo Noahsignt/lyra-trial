@@ -19,6 +19,7 @@ import type { NextPage} from "next";
 import superjson from 'superjson';
 import { appRouter } from '~/server/api/root';
 import { db } from '~/server/db';
+import DOMPurify from 'isomorphic-dompurify';
 
 export async function getStaticProps( context: GetStaticPropsContext<{ id: string }>, ) {
   const helpers = createServerSideHelpers({
@@ -53,6 +54,11 @@ const Home : NextPage<PageProps> = (props) => {
   
   if(!postData) {
     return <div>404</div>
+  }
+
+  const getCleanContent = (body: string) => {
+    const clean = DOMPurify.sanitize(body, { USE_PROFILES: { html: true } });
+    return clean;
   }
 
   const ReactionBar = () => {
@@ -110,9 +116,8 @@ const Home : NextPage<PageProps> = (props) => {
             </div>
           </div>
           <ReactionBar />
-          <div>
-            {postData.content}
-          </div>
+          <p className="whitespace-pre-line" dangerouslySetInnerHTML={{__html: getCleanContent(postData.content)}}>
+          </p>
         </div>
       </main>
     </>
