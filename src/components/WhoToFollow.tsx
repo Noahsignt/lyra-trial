@@ -16,7 +16,7 @@ const WhoToFollow = () => {
             {!isLoading ?
             <div>
                 {users?.map((user) => (
-                    <div key={user.id} className="grid grid-cols-7 gap-2">
+                    <div key={user.id} className="grid grid-cols-7 items-center gap-2">
                         <Image src={user.image} alt={user.name} width={28} height={28} className="rounded-full h-7" />
                         <div className="flex flex-col col-start-2 col-end-6">
                             <h1 className="font-medium">{user.name}</h1>

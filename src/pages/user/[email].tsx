@@ -257,11 +257,17 @@ const Home : NextPage<PageProps> = (props) => {
       <main className="mx-auto min-h-screen w-full lg:w-3/4">
         {!isLoading() ?
         <div className="grid grid-cols-4 min-h-screen">
-          <div className="col-start-1 col-end-4 border-r-2 border-gray-100 px-8 py-16">
-            <h1 className="text-4xl font-medium">
-              {userData.name}
-            </h1>
-            <div className="py-8">
+          <div className="col-span-4 sm:col-span-3 border-r-2 border-gray-100 py-4 sm:px-4 sm:py-12">
+            <div className="px-4 pt-4 flex flex-row items-center gap-4">
+              <Image src={cacheBustImgURL(userData.image)} alt={`${userData.name}'s profile picture`} width={44} height={44} className="sm:hidden h-[44px] md:h-[88px] rounded-full object-cover"/>
+              <h1 className="text-2xl sm:text-4xl font-medium">
+                {userData.name}
+              </h1>
+            </div>
+            <button className="sm:hidden bg-transparent px-4 text-green-700 hover:text-green-900 pt-2" onClick={() => setIsEditOpen(true)}>
+              Edit Profile
+            </button>
+            <div className="py-4">
               {!isPostsLoading ? 
                 <div>
                   {postsData?.map((post) => {
@@ -273,7 +279,7 @@ const Home : NextPage<PageProps> = (props) => {
                 </div>}
             </div>
           </div> 
-          <div className="flex flex-col items-start py-10 px-8 gap-4">
+          <div className="hidden sm:flex flex-col items-start py-10 px-8 gap-4">
             <Image src={cacheBustImgURL(userData.image)} alt={`${userData.name}'s profile picture`} width={88} height={88} className="md:h-[88px] rounded-full object-cover"/>
             <div className="flex flex-col">
               <p className="font-medium">{userData.name}</p>

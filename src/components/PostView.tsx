@@ -47,7 +47,7 @@ const PostView = ({post, onUserPage = false, onPostDeleted, onPostPublishStatusC
                 </div>} 
                 <div>
                     <h1 className="text-2xl font-bold">{post.title}</h1>
-                    <p className="text-gray-500">{post.intro}</p>
+                    <p className="text-gray-500 hidden sm:block">{post.intro}</p>
                     {onUserPage ?
                     <div className="flex justify-between items-center text-gray-500 relative pt-2">
                         {post.published ? 

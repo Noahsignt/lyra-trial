@@ -73,7 +73,7 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
 
     const PostTypePicker = () => {
         return (
-            <div className="flex flex-row justify-start items-start gap-8 w-full pt-10">
+            <div className="flex flex-row justify-start items-start gap-8 w-full">
                 <button onClick={() => setPostTypeFilter("Drafts")} className={`py-4 ${postTypeFilter === "Drafts" ? "text-black border-b border-solid border-black" : "text-gray-500 hover:text-gray-700"}`}>Drafts</button>
                 <button onClick={() => setPostTypeFilter("Published")} className={`py-4 ${postTypeFilter === "Published" ? "text-black border-b border-solid border-black" : "text-gray-500 hover:text-gray-700"}`}>Published</button>
             </div>
@@ -117,10 +117,10 @@ const UserPosts: NextPage<PageProps> = ({ email }) => {
         }
 
         return(
-            <div className="flex flex-col items-center w-1/2 py-16">
-                <div className="flex justify-between w-full py-2">
-                    <h1 className="text-4xl font-semibold">Your Stories</h1>
-                    <button onClick={() => router.push("/post")} className="bg-green-700 hover:bg-green-900 text-white py-2 px-4 rounded-full">
+            <div className="flex flex-col items-center w-full px-4 sm:w-1/2">
+                <div className="flex justify-between items-center w-full">
+                    <h1 className="text-2xl sm:text-4xl font-medium pt-6 sm:py-16">Your Stories</h1>
+                    <button onClick={() => router.push("/post")} className="hidden sm:block sm:h-12 bg-green-700 hover:bg-green-900 text-white py-2 px-4 rounded-full">
                         Write a story
                     </button>
                 </div>

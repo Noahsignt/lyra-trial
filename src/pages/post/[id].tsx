@@ -86,7 +86,7 @@ const Home : NextPage<PageProps> = (props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className="flex min-h-screen flex-col justify-start items-center py-8 px-16 gap-4">
+      <main className="flex min-h-screen flex-col justify-start items-center py-4 gap-4">
         <div className="bg-white p-4 rounded-md h-1/2 w-full lg:w-1/2 flex gap-8 flex flex-col">
           <div className="flex flex-col">
             <h1 className="text-4xl font-bold">
@@ -101,11 +101,11 @@ const Home : NextPage<PageProps> = (props) => {
             <div className="flex flex-col items-start">
               <h2 className="cursor-pointer" onClick={async () => router.push(`/user/${postData.createdBy.email}`)}>{postData.createdBy.name}</h2>
               <div className="flex flex-row gap-2 text-sm text-black/70">
-                <h4 className="">Published in <span className="text-black">{postData.createdBy.name}</span></h4>
-                <p>·</p>
-                <h4 className="">{getReadingTime(postData.content)} min read</h4>
-                <p>·</p>
-                <h4 className="">{getReadableDate(postData.createdAt)}</h4>
+                <h4 className="hidden sm:block">Published in <span className="text-black">{postData.createdBy.name}</span></h4>
+                <p className="hidden sm:block">·</p>
+                <h4 className="hidden sm:block">{getReadingTime(postData.content)} min read</h4>
+                <p className="hidden sm:block">·</p>
+                <h4>{getReadableDate(postData.createdAt)}</h4>
               </div>
             </div>
           </div>

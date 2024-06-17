@@ -33,12 +33,12 @@ export default function Home() {
         <div className="grid grid-cols-4 h-screen w-full sm:w-3/4">
               {isLoaded ? isAuth ?
               <>
-              <div className="col-start-1 col-end-4 border-r-2 border-gray-100 pr-8 pt-8 flex flex-col justify-start items-center">
+              <div className="col-span-4 sm:col-start-1 sm:col-end-4 border-r-2 border-gray-100 sm:pt-8 flex flex-col justify-start items-center">
                 {posts?.map((post) => (
                   <PostView post={post} key={post.id} />
                 ))}
               </div>
-              <div className="flex flex-col gap-4 p-4">
+              <div className="hidden sm:flex flex-col gap-4 p-4">
                 <StaffPicks />
                 <RecommendedTopics />
                 <WhoToFollow />
@@ -60,12 +60,12 @@ export default function Home() {
 function IntroBloc() {
   return (
     <div className="flex flex-col items-center justify-center gap-8 pt-20">
-      <h1 className="font-serif font-medium text-8xl text-center">
+      <h1 className="font-serif font-medium text-7xl sm:text-8xl text-center">
         Human <br />
         stories & ideas
       </h1>
       <div className="flex flex-col items-center justify-center gap-6">
-        <p className="text-lg">
+        <p className="text-lg text-center">
           A place to read, write, and deepen your understanding.
         </p>
         <Btn text={"Start reading!"} 

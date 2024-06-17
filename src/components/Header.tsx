@@ -42,23 +42,23 @@ const Header = () => {
     }
 
     return (
-        <header className="flex justify-between items-center border-b-2 border-gray-100 h-12 px-2">
+        <header className={`flex justify-between items-center ${sessionData && "border-b-2 border-gray-100"} h-12 px-2`}>
             <div className="flex items-center gap-2">
                 <Link className={`${!sessionData ? "text-4xl" : "text-2xl"} px-4 font-serif font-black tracking-tight`} href="/">
                     Lyredium
                 </Link>
                 {sessionData && 
-                <>
+                <div className="hidden sm:flex flex-row items-center">
                     <SearchBarSVG />
                     <input type="text" placeholder="Search" className="bg-transparent p-2 rounded-md w-48 text-sm outline-none text-gray-600" onChange={(e) => setSearch(e.target.value)} onKeyDown={(e) => handleSearchKeyDown(e)}/>
-                </>}
+                </div>}
             </div>
             {sessionData ?
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 pr-4">
                 <WriteButton />
                 {userData?.image && <Image src={cacheBustImgURL(userData?.image)} alt={userData?.name ?? ''} width={32} height={32} className="h-8 rounded-full cursor-pointer object-cover" onClick={() => setIsMenuOpen(!isMenuOpen)}/>}
             </div> :
-            <div className="flex">
+            <div className="hidden sm:flex">
                 <Btn onClick={() => signIn()} text="Sign in" lightScheme={true} />
                 <Btn onClick={() => signIn()} text="Get started" lightScheme={false} />
             </div>}
